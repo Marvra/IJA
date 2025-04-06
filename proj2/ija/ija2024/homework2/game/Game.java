@@ -4,13 +4,23 @@ import ija.ija2024.homework2.common.GameNode;
 import ija.ija2024.homework2.common.Position;
 import ija.ija2024.homework2.common.Side;
 import ija.ija2024.homework2.common.Type;
+import ija.ija2024.tool.common.ToolEnvironment;
+import ija.ija2024.tool.common.ToolField;
 
-public class Game {
+public class Game implements ToolEnvironment {
 
     int rows;
     int cols;
     GameNode[][] nodes;
     boolean hasPower = false;
+    public int powerRow = -1;
+    public int powerCol = -1;
+
+    @Override
+    public ToolField fieldAt(int row, int col) {
+
+        return checkParams(row,col) ? this.nodes[row][col] : null;
+    }
 
     public Game(int rows, int cols) { 
         this.rows = rows;
@@ -37,9 +47,71 @@ public class Game {
         return game;
     }
 
+
     public void init() {
 
+        if(powerRow == -1 && powerCol == -1) {
+            return;
+        }
+
+        this.nodes[powerRow][powerCol].setLight(true);
+
+        traverseConnected(powerRow, powerCol, this.nodes[powerRow][powerCol]);
     }
+
+
+    public void traverseNodes(int row, int col, Side sideFromConnected)
+    {
+        GameNode currNode = this.nodes[row][col];
+        if(currNode.isEmpty() || currNode.light()) {
+            return;
+        }
+
+        switch (sideFromConnected) {
+            case NORTH:
+                if(!currNode.containsConnector(Side.SOUTH)) return;
+                break;
+            case SOUTH:
+                if(!currNode.containsConnector(Side.NORTH)) return;
+                break;
+            case WEST:
+                if(!currNode.containsConnector(Side.EAST)) return;
+                break;
+            case EAST:
+                if(!currNode.containsConnector(Side.WEST)) return;
+                break;
+        }
+
+        currNode.setLight(true);
+
+        if(currNode.type == Type.BULB) {
+            return;
+        }
+
+        traverseConnected(row, col, currNode);
+
+        return;
+    }
+
+    public void traverseConnected(int row, int col, GameNode node ) {
+        for(Side s : node.sides) {
+            switch (s) {
+                case NORTH:
+                    traverseNodes(row-1, col, s);
+                    break;
+                case SOUTH:
+                    traverseNodes(row+1, col, s);
+                    break;
+                case WEST:
+                    traverseNodes(row, col-1, s);
+                    break;
+                case EAST:
+                    traverseNodes(row, col+1, s);
+                    break;
+            }
+        }
+    }
+
 
     public GameNode createNodeBase(Position p, Type t, Side... sides) {
 
@@ -54,7 +126,8 @@ public class Game {
     }
 
     public GameNode createPowerNode(Position p, Side... sides) {
-
+        this.powerRow = p.getRow();
+        this.powerCol = p.getCol();
         return checkNode(p, Type.POWER, sides) ? createNodeBase(p, Type.POWER, sides) : null;
     }
 

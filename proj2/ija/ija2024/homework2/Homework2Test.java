@@ -22,6 +22,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
+import ija.ija2024.tool.EnvPresenter;
 
 /**
  *
@@ -94,7 +95,8 @@ public class Homework2Test {
             {3, 6},
             {5, 4},
             {6, 4}
-        };                
+        };      
+        
         this.testLight(lights);
     }
 
@@ -129,9 +131,9 @@ public class Homework2Test {
         Position pos;
         GameNode node;
         
-        pos = new Position(3, 5);
-        node = game.node(pos);
-        node.turn();
+        // pos = new Position(3, 5);
+        // node = game.node(pos);
+        // node.turn();gam
 
         Integer lights[][]= {
             {3, 5},
@@ -235,12 +237,12 @@ public class Homework2Test {
             Position pos = new Position(row, col);    
             allpos.remove(pos);
             GameNode node = game.node(pos);
-            assertTrue(node.light(), "Políčko " + pos + " má být pod proudem.");
+            assertTrue(node.light(), "Políčko : " + node.toString() + " má být pod proudem.  Power : " + game.powerRow + " " + game.powerCol);
         }
         
         for (Position pos : allpos) {
             GameNode node = game.node(pos);
-            assertFalse(node.light(), "Políčko " + pos + " nemá být pod proudem.");
+            assertFalse(node.light(), "Políčko :" + node.toString() + " nemá být pod proudem. Power : " + game.powerRow + " " + game.powerCol);
         }        
     }
 }

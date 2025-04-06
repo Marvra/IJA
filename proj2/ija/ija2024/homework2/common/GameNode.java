@@ -1,10 +1,14 @@
 package ija.ija2024.homework2.common;
+import ija.ija2024.tool.common.AbstractObservableField;
+import ija.ija2024.tool.common.ToolField;
 
-public class GameNode {
+public class GameNode extends AbstractObservableField implements ToolField {
 
-    Type type;
+    public Side[] sides;
+
+    public Type type;
     Position position;
-    Side[] sides;
+    boolean light = false;
 
     public GameNode(Type type, Position position, Side ... sides) {
         this.type = type;
@@ -23,7 +27,8 @@ public class GameNode {
     }
 
     public boolean light() {
-        return false;
+        notifyObservers();
+        return this.light;
     }
 
     public void turn() {
@@ -45,6 +50,7 @@ public class GameNode {
                     break;
             }   
         }
+        notifyObservers();
     }
 
     public void setType(Type t) {
@@ -53,6 +59,14 @@ public class GameNode {
 
     public void setSides(Side ... s) {
         this.sides = s;
+    }
+
+    public void setLight(boolean l) {
+        this.light = l;
+    }
+
+    public boolean isEmpty() {
+        return this.type == Type.EMPTY ? true : false;
     }
 
     public boolean isLink() {
@@ -78,7 +92,23 @@ public class GameNode {
         }
         return false;
     }
+    public boolean east() {
+        return containsConnector(Side.EAST);
+    }
 
+    public boolean west() {
+        return containsConnector(Side.WEST);
+    }
+
+    public boolean south() {
+        return containsConnector(Side.SOUTH);
+    }
+
+    public boolean north() {
+        return containsConnector(Side.NORTH);
+    }
+
+    @Override
     public String toString() {
 
         String sidesString = "";
