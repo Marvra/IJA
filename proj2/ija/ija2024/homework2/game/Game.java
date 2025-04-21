@@ -6,8 +6,11 @@ import ija.ija2024.homework2.common.Side;
 import ija.ija2024.homework2.common.Type;
 import ija.ija2024.tool.common.ToolEnvironment;
 import ija.ija2024.tool.common.ToolField;
+import ija.ija2024.tool.common.Observable;
+import ija.ija2024.tool.common.Observable.Observer;
+import ija.ija2024.tool.view.FieldView;
 
-public class Game implements ToolEnvironment {
+public class Game implements ToolEnvironment, Observer {
 
     int rows;
     int cols;
@@ -15,6 +18,7 @@ public class Game implements ToolEnvironment {
     boolean hasPower = false;
     public int powerRow = -1;
     public int powerCol = -1;
+    private boolean notifyRun = false;
 
     @Override
     public ToolField fieldAt(int row, int col) {
@@ -40,13 +44,40 @@ public class Game implements ToolEnvironment {
 
         for(int i = 1; i <= rows; i++) {
             for(int j = 1; j <= cols; j++) {
-                game.nodes[i][j] = new GameNode(Type.EMPTY, new Position(i, j), new Side[0]);
+                GameNode node = new GameNode(Type.EMPTY, new Position(i, j), new Side[0]);
+
+                game.nodes[i][j] = node;
             }
         }
 
         return game;
     }
 
+    @Override
+    public void update(Observable o) {
+        if (notifyRun) return; 
+        
+        notifyRun = true;
+
+        GameNode node = (GameNode) o;
+
+        resetLights();
+        traverseConnected(powerRow, powerCol, this.nodes[powerRow][powerCol], true);
+
+        notifyRun = false;
+    }
+
+    public void resetLights() {
+        for (int i = 1; i <= rows; i++) {
+            for (int j = 1; j <= cols; j++) {
+                if (this.nodes[i][j].type == Type.EMPTY || this.nodes[i][j].type == Type.POWER) {
+                    continue;
+                }
+
+                this.nodes[i][j].setLight(false, true);
+            }
+        }
+    }
 
     public void init() {
 
@@ -54,13 +85,31 @@ public class Game implements ToolEnvironment {
             return;
         }
 
-        this.nodes[powerRow][powerCol].setLight(true);
+        this.nodes[powerRow][powerCol].setLight(true, false);
 
-        traverseConnected(powerRow, powerCol, this.nodes[powerRow][powerCol]);
+        traverseConnected(powerRow, powerCol, this.nodes[powerRow][powerCol], false);
     }
 
+    public void traverseConnected(int row, int col, GameNode node, boolean notify) {
+        for(Side s : node.sides) {
+            switch (s) {
+                case NORTH:
+                    traverseNodes(row-1, col, s, notify);
+                    break;
+                case SOUTH:
+                    traverseNodes(row+1, col, s, notify);
+                    break;
+                case WEST:
+                    traverseNodes(row, col-1, s, notify);
+                    break;
+                case EAST:
+                    traverseNodes(row, col+1, s, notify);
+                    break;
+            }
+        }
+    }
 
-    public void traverseNodes(int row, int col, Side sideFromConnected)
+    public void traverseNodes(int row, int col, Side sideFromConnected, boolean notify)
     {
         GameNode currNode = this.nodes[row][col];
         if(currNode.isEmpty() || currNode.light()) {
@@ -82,34 +131,15 @@ public class Game implements ToolEnvironment {
                 break;
         }
 
-        currNode.setLight(true);
+        currNode.setLight(true, notify);
 
         if(currNode.type == Type.BULB) {
             return;
         }
 
-        traverseConnected(row, col, currNode);
+        traverseConnected(row, col, currNode, notify);
 
         return;
-    }
-
-    public void traverseConnected(int row, int col, GameNode node ) {
-        for(Side s : node.sides) {
-            switch (s) {
-                case NORTH:
-                    traverseNodes(row-1, col, s);
-                    break;
-                case SOUTH:
-                    traverseNodes(row+1, col, s);
-                    break;
-                case WEST:
-                    traverseNodes(row, col-1, s);
-                    break;
-                case EAST:
-                    traverseNodes(row, col+1, s);
-                    break;
-            }
-        }
     }
 
 
@@ -117,6 +147,7 @@ public class Game implements ToolEnvironment {
 
         this.nodes[p.getRow()][p.getCol()].setType(t);
         this.nodes[p.getRow()][p.getCol()].setSides(sides);
+        this.nodes[p.getRow()][p.getCol()].addObserver(this);
         return this.nodes[p.getRow()][p.getCol()];
     }
 

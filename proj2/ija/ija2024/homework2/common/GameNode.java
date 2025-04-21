@@ -1,6 +1,7 @@
 package ija.ija2024.homework2.common;
 import ija.ija2024.tool.common.AbstractObservableField;
 import ija.ija2024.tool.common.ToolField;
+import java.util.Arrays;
 
 public class GameNode extends AbstractObservableField implements ToolField {
 
@@ -9,6 +10,8 @@ public class GameNode extends AbstractObservableField implements ToolField {
     public Type type;
     Position position;
     boolean light = false;
+
+    public boolean notifyView = false;
 
     public GameNode(Type type, Position position, Side ... sides) {
         this.type = type;
@@ -22,12 +25,12 @@ public class GameNode extends AbstractObservableField implements ToolField {
         }
     }
 
+
     public Position getPosition() {
         return this.position;
     }
 
     public boolean light() {
-        notifyObservers();
         return this.light;
     }
 
@@ -60,11 +63,22 @@ public class GameNode extends AbstractObservableField implements ToolField {
     public void setSides(Side ... s) {
         this.sides = s;
     }
+    
 
-    public void setLight(boolean l) {
-        this.light = l;
+    public void setLight(boolean l, boolean notify) {
+        // run for init
+        if (!notify) {
+            this.light = l;
+            return;
+        }
+        
+        // run only for observer notify
+        if (this.light != l) {
+            this.light = l;
+            notifyObservers();
+        }
     }
-
+    
     public boolean isEmpty() {
         return this.type == Type.EMPTY ? true : false;
     }
@@ -113,6 +127,7 @@ public class GameNode extends AbstractObservableField implements ToolField {
 
         String sidesString = "";
         int sidesLength = this.sides.length;
+        Arrays.sort(this.sides);
 
         for (int i = 0; i < sidesLength; i++) {
             sidesString += this.sides[i].toString();
