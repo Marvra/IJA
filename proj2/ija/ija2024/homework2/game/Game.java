@@ -29,6 +29,7 @@ public class Game implements ToolEnvironment, Observer {
     public Game(int rows, int cols) { 
         this.rows = rows;
         this.cols = cols;
+        this.create(this.rows, this.cols);
     }
 
     public static Game create (int rows, int cols) {
@@ -39,7 +40,7 @@ public class Game implements ToolEnvironment, Observer {
 
         Game game = new Game(rows, cols);
 
-        // +1 beacause [1,1] is top left 
+        // +1 because [1,1] is top left
         game.nodes = new GameNode[rows+1][cols+1];
 
         for(int i = 1; i <= rows; i++) {
