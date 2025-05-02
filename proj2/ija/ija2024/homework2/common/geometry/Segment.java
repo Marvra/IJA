@@ -15,8 +15,15 @@ public class Segment extends Line {
 		Position pos;
 		do {
 			pos = this.getPoint(parameter).toPosition();
-			if(!positions.contains(pos))
+			if(!positions.contains(pos)){
+				if(!positions.isEmpty()){
+					Position lastPosition = positions.get(positions.size() - 1);
+					if(lastPosition.getRow() != pos.getRow() && lastPosition.getCol() != pos.getCol()){
+						positions.add(new Position(lastPosition.getRow(), pos.getCol()));
+					}
+				}
 				positions.add(pos);
+			}
 			parameter += 1 / Math.floor(this.vector.length());
 		} while (parameter <= 1);
 		return positions;

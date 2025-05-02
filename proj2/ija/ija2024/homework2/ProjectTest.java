@@ -106,26 +106,29 @@ public class ProjectTest {
     public void test02(){
         Segment s = new Segment(new Point(1,1), new Point(3,3));
         List<Position> raster = s.rasterize();
-        List<Position> expected = Arrays.asList(new Position(1,1), new Position(2,2), new Position(3,3));
-        assertEquals(expected, raster, "Test rasterization.");
+        List<Position> expected = Arrays.asList(new Position(1,1), new Position(1, 2), new Position(2,2), new Position(2, 3),new Position(3,3));
+        assertEquals(expected, raster, "2.1 Test rasterization.");
 
         s = new Segment(new Point(3,3), new Point(1,1));
         raster = s.rasterize();
-        expected = Arrays.asList(new Position(3,3), new Position(2,2), new Position(1,1));
-        assertEquals(expected, raster, "Test rasterization.");
+        expected = Arrays.asList(new Position(3,3), new Position(3,2), new Position(2,2), new Position(2,1), new Position(1,1));
+        assertEquals(expected, raster, "2.2 Test rasterization.");
 
         s = new Segment(new Point(1,1), new Point(1,1));
         raster = s.rasterize();
         expected = Arrays.asList(new Position(1,1));
-        assertEquals(expected, raster, "Test rasterization.");
+        assertEquals(expected, raster, "2.3 Test rasterization.");
 
         s = new Segment(new Point(3,3), new Point(15,15));
         raster = s.rasterize();
         expected = new ArrayList<>();
         for (int i = 3; i <= 15; i++){
             expected.add(new Position(i, i));
+            if(i < 15)
+                expected.add(new Position(i, i+1));
         }
-        assertEquals(expected, raster, "Test rasterization.");
+        
+        assertEquals(expected, raster, "2.3 Test rasterization.");
 
         s = new Segment(new Point(3,3), new Point(15,3));
         raster = s.rasterize();
@@ -133,7 +136,7 @@ public class ProjectTest {
         for (int i = 3; i <= 15; i++){
             expected.add(new Position(i, 3));
         }
-        assertEquals(expected, raster, "Test rasterization.");
+        assertEquals(expected, raster, "2.4 Test rasterization.");
 
         s = new Segment(new Point(3,3), new Point(3,20));
         raster = s.rasterize();
@@ -141,7 +144,24 @@ public class ProjectTest {
         for (int i = 3; i <= 20; i++){
             expected.add(new Position(3, i));
         }
-        assertEquals(expected, raster, "Test rasterization.");
+        assertEquals(expected, raster, "2.5 Test rasterization.");
+
+        s = new Segment(new Point(3,3), new Point(1,20));
+        raster = s.rasterize();
+        expected = new ArrayList<>();
+        for (Position position : raster) {
+            System.out.println(position.getRow() + " " + position.getCol());
+        }        
+        for (int i = 3; i <= 8; i++){
+            expected.add(new Position(3, i));
+        }
+        for (int i = 8; i <= 16; i++){
+            expected.add(new Position(2, i));
+        }
+        for (int i = 16; i <= 20; i++){
+            expected.add(new Position(1, i));
+        }
+        assertEquals(expected, raster, "2.6 Test rasterization.");
     }
 
 }
