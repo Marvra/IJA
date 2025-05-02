@@ -1,5 +1,7 @@
 package ija.ija2024.homework2.common;
 
+import java.util.Objects;
+
 public class Position {
     int row;
     int col;
@@ -31,5 +33,10 @@ public class Position {
         Position p = (Position) o;
 
         return this.row == p.row && this.col == p.col;
+    }
+    
+    @Override
+    public int hashCode() {
+        return Objects.hash(this.row, this.col);
     }
 }
