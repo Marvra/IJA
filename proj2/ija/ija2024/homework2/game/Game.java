@@ -225,4 +225,16 @@ public class Game implements ToolEnvironment, Observer {
 
         return true;
     }
+
+    public void print() {
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
+                if (this.nodes[i+1][j+1] != null) {
+                    System.out.print(this.nodes[i+1][j+1].toString() + "\t");
+                }
+            }
+            System.out.println();
+        }
+        System.out.println();
+    }
 }
