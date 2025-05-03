@@ -29,7 +29,6 @@ public class Game implements ToolEnvironment, Observer {
     public Game(int rows, int cols) { 
         this.rows = rows;
         this.cols = cols;
-        this.create(this.rows, this.cols);
     }
 
     public static Game create (int rows, int cols) {
