@@ -52,7 +52,7 @@ public class Homework2Test {
         {"B", 2, 6, SOUTH},
         {"B", 4, 7, WEST},
         {"P", 3, 5, EAST, SOUTH}
-    };    
+    };
         
     /**
      * Vytvoří hru včetně políček podle definice v atributu {@link #def} a provede její inicializaci.
