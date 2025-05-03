@@ -22,17 +22,18 @@ public class MainMenuController {
     private Stage stage;
     private Parent root;
 
-    private void changeScreen(ActionEvent event, String fxmlName){
+    private FXMLLoader changeScreen(ActionEvent event, String fxmlName){
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlName));
             root = loader.load();
-
             stage = (Stage)((Node)event.getSource()).getScene().getWindow();
             scene = new Scene(root);
             stage.setScene(scene);
             stage.show();
+            return loader;
         } catch (IOException e ) {
             System.out.println(e.getMessage());
+            return null;
         }
     }
 
@@ -41,6 +42,7 @@ public class MainMenuController {
     }
 
     public void chooseDifficulty(ActionEvent event){
-        changeScreen(event, "board.fxml");
+        BoardController boardController = changeScreen(event, "board.fxml").getController();
+        boardController.createBoard(4);
     }
 }
