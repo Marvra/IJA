@@ -27,7 +27,7 @@ import static org.junit.jupiter.api.Assertions.*;
  *
  * @author Radek Koci <koci AT fit.vut.cz>
  */
-public class Homework2Test {
+public class omework2Test {
     
     /**
      * Hra pro testování.
