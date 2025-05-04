@@ -71,7 +71,7 @@ public class BoardController {
 
                 ImageView title = new ImageView(image);
 
-                int numberOfRotations = numberOfRotations(node.sides.length, node.sides);
+                int numberOfRotations = numberOfRotations(node.sides.length, node);
                 title.setRotate((title.getRotate() + 90 * numberOfRotations) % 360);
 
                 boardTitles[row][col] = title;
@@ -91,7 +91,6 @@ public class BoardController {
     }
 
     private Image selectCorrectImageTitle(GameNode node) {
-
         Side[] sides = node.sides;
         Type type = node.type;
         String base = type.toString(); // B L P
@@ -123,14 +122,21 @@ public class BoardController {
     }
 
 
-    private int numberOfRotations(int numberOfSides, Side... sides) {
+    private int numberOfRotations(int numberOfSides, GameNode node) {
         int count = 0;
         Side[] sidesPic;
 
+
         if(numberOfSides == 1 ) { // B, P_1
             sidesPic = new Side[]{Side.EAST};
-        } else if (numberOfSides == 2) { // POZOR NEMAS CHECK V PRIPADE LL_2 / PL_@
-            sidesPic = new Side[]{Side.EAST, Side.WEST};
+        } else if (numberOfSides == 2) {
+
+            if ((node.north() && node.south()) || (node.east() && node.west())) {
+                sidesPic = new Side[]{Side.EAST, Side.WEST};
+            }
+            else {
+                sidesPic = new Side[]{Side.EAST, Side.SOUTH};
+            }
 
         } else if (numberOfSides == 3) {
             sidesPic = new Side[]{Side.EAST, Side.WEST, Side.SOUTH};
@@ -138,10 +144,11 @@ public class BoardController {
             return 0;
         }
 
-        Arrays.sort(sides);
+        Side[] origSides = node.sides.clone();
+        Arrays.sort(origSides);
         Arrays.sort(sidesPic);
 
-        while (!Arrays.equals(sides, sidesPic)) {
+        while (!Arrays.equals(origSides, sidesPic)) {
             count++;
             rotateRight(sidesPic);
             if(count > 3) break;
