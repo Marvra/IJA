@@ -10,5 +10,6 @@
       <ListView fx:id="logFiles" layoutX="182.0" layoutY="92.0" prefHeight="200.0" prefWidth="200.0" />
       <Text layoutX="237.0" layoutY="61.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Choose game" />
       <Button fx:id="logSelectedButton" layoutX="257.0" layoutY="323.0" mnemonicParsing="false" onAction="#startSelectedGame" text="Start" />
+      <Button fx:id="backToMenuBtn" layoutX="14.0" layoutY="14.0" mnemonicParsing="false" onAction="#backToMenu" text="&lt; to menu" />
    </children>
 </AnchorPane>

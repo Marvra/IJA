@@ -18,5 +18,6 @@
       <Button fx:id="prevMoveBtn" disable="true" layoutX="52.0" layoutY="630.0" mnemonicParsing="false" onAction="#prevMove" opacity="0.0" text="&lt;" />
       <Button fx:id="nextMoveBtn" disable="true" layoutX="520.0" layoutY="630.0" mnemonicParsing="false" onAction="#nextMove" opacity="0.0" text="&gt;" />
       <Button fx:id="playLogBtn" disable="true" layoutX="280.0" layoutY="630.0" mnemonicParsing="false" onAction="#playMode" opacity="0.0" text="Play" />
+      <Button fx:id="backToMenuBtn" layoutX="14.0" layoutY="14.0" mnemonicParsing="false" onAction="#backToMenu" text="&lt; to menu" />
    </children>
 </AnchorPane>

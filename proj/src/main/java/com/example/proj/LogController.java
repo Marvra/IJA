@@ -28,7 +28,8 @@ import org.ietf.jgss.GSSManager;
 public class LogController {
     @FXML
     private ListView<String> logFiles;
-    private Button logSelectedButton;
+    @FXML
+    private Button backToMenuBtn;
 
     private String logFileName;
     private List<String> log;
@@ -46,6 +47,10 @@ public class LogController {
         }
 
         Game game = Game.create(4,4);
+    }
+
+    public void backToMenu(ActionEvent event) {
+        MainMenuController.changeScreen(event, "game_mode_selection.fxml");
     }
 
     public void startSelectedGame(ActionEvent event) {

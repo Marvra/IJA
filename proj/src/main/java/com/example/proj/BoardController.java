@@ -18,6 +18,7 @@ import ija.ija2024.homework2.common.Side;
 
 import javafx.scene.input.MouseEvent;
 
+import java.util.Arrays;
 import java.util.List;
 
 public class BoardController {
@@ -32,6 +33,8 @@ public class BoardController {
     Button prevMoveBtn;
     @FXML
     Button playLogBtn;
+    @FXML
+    Button backToMenuBtn;
 
     private Game createdGame;
     private List<String> logData;
@@ -39,6 +42,10 @@ public class BoardController {
 
 
     private ImageView[][] boardTitles;
+
+    public void backToMenu(ActionEvent event) {
+        MainMenuController.changeScreen(event, "game_mode_selection.fxml");
+    }
 
     public void createBoard(Game game) {
 
@@ -63,6 +70,9 @@ public class BoardController {
                 Image image = selectCorrectImageTitle(node);
 
                 ImageView title = new ImageView(image);
+
+                int numberOfRotations = numberOfRotations(node.sides.length, node.sides);
+                title.setRotate((title.getRotate() + 90 * numberOfRotations) % 360);
 
                 boardTitles[row][col] = title;
                 gridBoard.add(title, col, row);
@@ -113,6 +123,44 @@ public class BoardController {
     }
 
 
+    private int numberOfRotations(int numberOfSides, Side... sides) {
+        int count = 0;
+        Side[] sidesPic;
+
+        if(numberOfSides == 1 ) { // B, P_1
+            sidesPic = new Side[]{Side.EAST};
+        } else if (numberOfSides == 2) { // POZOR NEMAS CHECK V PRIPADE LL_2 / PL_@
+            sidesPic = new Side[]{Side.EAST, Side.WEST};
+
+        } else if (numberOfSides == 3) {
+            sidesPic = new Side[]{Side.EAST, Side.WEST, Side.SOUTH};
+        } else {
+            return 0;
+        }
+
+        Arrays.sort(sides);
+        Arrays.sort(sidesPic);
+
+        while (!Arrays.equals(sides, sidesPic)) {
+            count++;
+            rotateRight(sidesPic);
+            if(count > 3) break;
+        }
+        return count;
+    }
+
+    private void rotateRight(Side[] sides) {
+        for (int i = 0; i < sides.length; i++) {
+            sides[i] = switch (sides[i]) {
+                case NORTH -> Side.EAST;
+                case EAST -> Side.SOUTH;
+                case SOUTH -> Side.WEST;
+                case WEST -> Side.NORTH;
+            };
+        }
+    }
+
+
     private void printClickedTitle (ImageView title, GameNode node) {
 
         Integer hoveredRow = GridPane.getRowIndex(title);
@@ -131,7 +179,7 @@ public class BoardController {
         ColorAdjust darkenBoard =  new ColorAdjust();
         darkenBoard.setBrightness(-0.5);
         gridBoard.setEffect(darkenBoard);
-        //gridBoard.setDisable(true);
+        gridBoard.setDisable(true);
 
         nextMoveBtn.setDisable(false);
         playLogBtn.setDisable(false);
@@ -181,7 +229,6 @@ public class BoardController {
     }
 
     public void playMode(ActionEvent event) {
-        // Disable log control buttons
         nextMoveBtn.setDisable(true);
         prevMoveBtn.setDisable(true);
         playLogBtn.setDisable(true);
@@ -190,28 +237,11 @@ public class BoardController {
         prevMoveBtn.setOpacity(0);
         playLogBtn.setOpacity(0);
 
-        // Remove board darkening to show it’s interactive again
+        gridBoard.setDisable(false);
         gridBoard.setEffect(null);
 
-        // Prevent further log interaction
         logData = null;
         logLine = 0;
-
-        // Allow user to click nodes freely
-//        for (int row = 0; row < boardTitles.length; row++) {
-//            for (int col = 0; col < boardTitles[row].length; col++) {
-//                ImageView title = boardTitles[row][col];
-//                Position pos = new Position(row + 1, col + 1);
-//                GameNode node = createdGame.node(pos);
-//
-//                if (node == null || node.isEmpty()) continue;
-//
-//                // Make tiles interactive again
-//                title.setOnMouseClicked(mouseEvent -> printClickedTitle(title, node));
-//            }
-//        }
-
-        System.out.println("Switched to play mode. Log replay is now disabled.");
     }
 
 }
