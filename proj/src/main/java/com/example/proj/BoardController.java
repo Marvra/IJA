@@ -1,14 +1,10 @@
 package com.example.proj;
 
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.geometry.Pos;
 import javafx.scene.effect.ColorAdjust;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
-
-import javafx.scene.input.MouseEvent;
 
 public class BoardController {
     private int imageWidth = 50;

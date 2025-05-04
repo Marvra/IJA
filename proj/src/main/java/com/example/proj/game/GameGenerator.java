@@ -1,16 +1,12 @@
-package ija.ija2024.homework2.game;
+package com.example.proj.game;
 
-import ija.ija2024.homework2.common.Position;
-import ija.ija2024.homework2.common.Side;
-import ija.ija2024.homework2.game.Game;
-import ija.ija2024.homework2.game.DifficultyLevels.GeneralDifficulty;
-import ija.ija2024.homework2.game.DifficultyLevels.EasyDifficulty;
-import ija.ija2024.homework2.game.DifficultyLevels.GameDifficulty;
+import com.example.proj.game.DifficultyLevels.EasyDifficulty;
+import com.example.proj.game.DifficultyLevels.GameDifficulty;
+import com.example.proj.game.DifficultyLevels.GeneralDifficulty;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Supplier;
-
-import java.util.Random;
 
 public class GameGenerator {
     private int rows, cols;

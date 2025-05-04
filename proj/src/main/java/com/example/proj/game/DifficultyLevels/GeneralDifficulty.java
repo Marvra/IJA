@@ -1,4 +1,4 @@
-package ija.ija2024.homework2.game.DifficultyLevels;
+package com.example.proj.game.DifficultyLevels;
 
 public enum GeneralDifficulty {
     easy,   // 6x6 map with 1 lightbulb and easy map generation

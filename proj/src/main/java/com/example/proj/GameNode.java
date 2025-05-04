@@ -1,6 +1,8 @@
-package ija.ija2024.homework2.common;
+package com.example.proj;
+
 import ija.ija2024.tool.common.AbstractObservableField;
 import ija.ija2024.tool.common.ToolField;
+
 import java.util.Arrays;
 
 public class GameNode extends AbstractObservableField implements ToolField {

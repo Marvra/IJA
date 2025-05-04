@@ -1,6 +1,6 @@
-package ija.ija2024.homework2.common.geometry;
+package com.example.proj.geometry;
 
-import ija.ija2024.homework2.common.Position;
+import com.example.proj.Position;
 
 public class Point {
 	private final double x;

@@ -1,11 +1,11 @@
-package ija.ija2024.homework2.game.DifficultyLevels;
+package com.example.proj.game.DifficultyLevels;
+
+import com.example.proj.GameNode;
+import com.example.proj.Position;
+import com.example.proj.Side;
+import com.example.proj.game.Game;
 
 import java.util.List;
-
-import ija.ija2024.homework2.common.GameNode;
-import ija.ija2024.homework2.common.Position;
-import ija.ija2024.homework2.common.Side;
-import ija.ija2024.homework2.game.Game;
 
 public class GameDifficulty {
 	protected GeneralDifficulty difficulty;

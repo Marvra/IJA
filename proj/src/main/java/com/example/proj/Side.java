@@ -1,4 +1,4 @@
-package ija.ija2024.homework2.common;
+package com.example.proj;
 
 public enum Side {
     EAST,

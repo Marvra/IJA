@@ -1,14 +1,13 @@
-package ija.ija2024.homework2.game;
+package com.example.proj.game;
 
-import ija.ija2024.homework2.common.GameNode;
-import ija.ija2024.homework2.common.Position;
-import ija.ija2024.homework2.common.Side;
-import ija.ija2024.homework2.common.Type;
-import ija.ija2024.tool.common.ToolEnvironment;
-import ija.ija2024.tool.common.ToolField;
+import com.example.proj.GameNode;
+import com.example.proj.Position;
+import com.example.proj.Side;
+import com.example.proj.Type;
 import ija.ija2024.tool.common.Observable;
 import ija.ija2024.tool.common.Observable.Observer;
-import ija.ija2024.tool.view.FieldView;
+import ija.ija2024.tool.common.ToolEnvironment;
+import ija.ija2024.tool.common.ToolField;
 
 public class Game implements ToolEnvironment, Observer {
 

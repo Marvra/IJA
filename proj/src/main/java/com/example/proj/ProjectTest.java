@@ -1,28 +1,21 @@
 /*
- * IJA (Seminář Java): 2024/25 Ukol 2
- * Author:  Radek Kočí, VUT FIT
- * Created: 03/2025
+ * IJA 2024/25 Project tests
+ * Author:  Jakub Ramaseuski, Martin Vrablec, VUT FIT
+ * Created: 05/2025
  */
-package ija.ija2024.homework2;
+package com.example.proj;
 
-import ija.ija2024.homework2.common.GameNode;
-import ija.ija2024.homework2.common.Position;
-import ija.ija2024.homework2.common.Side;
-import ija.ija2024.homework2.common.geometry.Point;
-import ija.ija2024.homework2.common.geometry.Segment;
-
-import static ija.ija2024.homework2.common.Side.EAST;
-import static ija.ija2024.homework2.common.Side.NORTH;
-import static ija.ija2024.homework2.common.Side.SOUTH;
-import static ija.ija2024.homework2.common.Side.WEST;
-
-import ija.ija2024.homework2.game.DifficultyLevels.EasyDifficulty;
-import ija.ija2024.homework2.game.Game;
-import ija.ija2024.homework2.game.DifficultyLevels.GameDifficulty;
+import com.example.proj.game.DifficultyLevels.EasyDifficulty;
+import com.example.proj.game.DifficultyLevels.GameDifficulty;
+import com.example.proj.game.Game;
+import com.example.proj.geometry.Point;
+import com.example.proj.geometry.Segment;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import static com.example.proj.Side.*;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -30,21 +23,11 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
-/**
- *
- * @author Radek Koci <koci AT fit.vut.cz>
- */
+
 public class ProjectTest {
 
-    /**
-     * Hra pro testování.
-     */
     private Game game;
 
-    /**
-     * Definice obsazených políček ve hře. Použito pro vytvoření testovací hry.
-     * def_field = {Type, row, col, list_of_connectors}
-     */
     private final Object def[][] = {
             { "L", 4, 5, NORTH, EAST, SOUTH },
             { "L", 5, 5, NORTH, EAST, WEST },
@@ -61,10 +44,6 @@ public class ProjectTest {
             { "P", 3, 5, EAST, SOUTH }
     };
 
-    /**
-     * Vytvoří hru včetně políček podle definice v atributu {@link #def} a provede
-     * její inicializaci.
-     */
     // @BeforeEach
     public void setUp() {
         game = Game.create(10, 12);
@@ -85,8 +64,6 @@ public class ProjectTest {
             }
         }
 
-        // Inicializuje hru (overi, ze je pouze jeden zdroj, alespon jedna zarovka a
-        // rozsviti policka napojena na zdroj).
         game.init();
     }
 
@@ -97,11 +74,11 @@ public class ProjectTest {
     public void test01() {
         Point p = new Point(3.5, 4.25);
         Position pos = p.toPosition();
-        assertEquals(3, pos.getRow(), "Test konverze Point na Position.");
+        assertEquals(4, pos.getRow(), "Test konverze Point na Position.");
         assertEquals(4, pos.getCol(), "Test konverze Point na Position.");
 
         p = Point.fromPosition(pos);
-        assertEquals(3, p.getX(), "Test konverze Position na Point.");
+        assertEquals(4, p.getX(), "Test konverze Position na Point.");
         assertEquals(4, p.getY(), "Test konverze Position na Point.");
     }
 

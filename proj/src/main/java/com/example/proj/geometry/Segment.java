@@ -1,8 +1,8 @@
-package ija.ija2024.homework2.common.geometry;
+package com.example.proj.geometry;
+
+import com.example.proj.Position;
 
 import java.util.List;
-
-import ija.ija2024.homework2.common.Position;
 
 public class Segment extends Line {
 	public Segment(Point start, Point end) {
