@@ -9,6 +9,8 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.stage.Stage;
+import ija.ija2024.homework2.game.DifficultyLevels.GameDifficulty;
+import ija.ija2024.homework2.game.Game;
 
 import java.io.IOException;
 
@@ -18,13 +20,17 @@ public class MainMenuController {
     private Button startBtn;
     private Button difficultyBtn;
 
-    private Scene scene;
-    private Stage stage;
-    private Parent root;
+//    private Scene scene;
+//    private Stage stage;
+//    private Parent root;
 
-    private FXMLLoader changeScreen(ActionEvent event, String fxmlName){
+    public static FXMLLoader changeScreen(ActionEvent event, String fxmlName) {
+        Scene scene;
+        Stage stage;
+        Parent root;
+
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlName));
+            FXMLLoader loader = new FXMLLoader(MainMenuController.class.getResource(fxmlName));
             root = loader.load();
             stage = (Stage)((Node)event.getSource()).getScene().getWindow();
             scene = new Scene(root);
@@ -43,6 +49,12 @@ public class MainMenuController {
 
     public void chooseDifficulty(ActionEvent event){
         BoardController boardController = changeScreen(event, "board.fxml").getController();
-        boardController.createBoard(4);
+        GameDifficulty gameDifficulty = new GameDifficulty();
+        Game game = gameDifficulty.generate();
+        boardController.createBoard(game);
+    }
+
+    public void logGameScreen(ActionEvent event){
+        changeScreen(event, "log_game_selection.fxml");
     }
 }
