@@ -8,6 +8,7 @@ package ija.ija2024.homework2;
 import ija.ija2024.homework2.common.GameNode;
 import ija.ija2024.homework2.common.Position;
 import ija.ija2024.homework2.common.Side;
+import ija.ija2024.homework2.common.geometry.Line;
 import ija.ija2024.homework2.common.geometry.Point;
 import ija.ija2024.homework2.common.geometry.Segment;
 
@@ -97,11 +98,11 @@ public class ProjectTest {
     public void test01() {
         Point p = new Point(3.5, 4.25);
         Position pos = p.toPosition();
-        assertEquals(3, pos.getRow(), "Test konverze Point na Position.");
+        assertEquals(4, pos.getRow(), "Test konverze Point na Position.");
         assertEquals(4, pos.getCol(), "Test konverze Point na Position.");
 
         p = Point.fromPosition(pos);
-        assertEquals(3, p.getX(), "Test konverze Position na Point.");
+        assertEquals(4, p.getX(), "Test konverze Position na Point.");
         assertEquals(4, p.getY(), "Test konverze Position na Point.");
     }
 
@@ -224,5 +225,14 @@ public class ProjectTest {
         EasyDifficulty easyDifficulty = new EasyDifficulty();
         Game game = easyDifficulty.generate();
         game.init();
+    }
+
+    @Test
+    public void test05() {
+        Line l = new Line(new Point(0, 0), new Point(4, 4));
+        Line m = new Line(new Point(0, 2), new Point(2, 0));
+        Point p = Line.intersection(l, m);
+        assertEquals(1, p.getX(), "5.1 Intersection wrong");
+        assertEquals(1, p.getY(), "5.1 Intersection wrong");
     }
 }

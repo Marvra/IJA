@@ -36,4 +36,8 @@ public class Segment extends Line {
 		}
 		return super.getPoint(parameter);
 	}
+
+	public double length() {
+		return vector.length();
+	}
 }
