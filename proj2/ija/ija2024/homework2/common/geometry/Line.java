@@ -9,6 +9,16 @@ public class Line {
 		this.vector = new Vector(start, end);
 	}
 
+	public Line(Point start, Vector vector) {
+		this.start = start;
+		this.vector = vector;
+	}
+
+	public Line(Segment segment) {
+		this.start = segment.start;
+		this.vector = segment.vector;
+	}
+
 	/**
 	 * Gets a point on the line, given by a parameter. The parameter is given as
 	 * 
@@ -60,7 +70,7 @@ public class Line {
 
 	public static double distance(Line line1, Line line2) {
 		try {
-			if (line1.vector.normalize().equals(line2.vector.normalize())) {
+			if (line1.vector.clone().normalize().equals(line2.vector.clone().normalize())) {
 				return distance(line1, line2.start);
 			} else {
 				return 0;
@@ -80,10 +90,10 @@ public class Line {
 			return null;
 		Point p0 = first.start;
 		Point p1 = second.start;
-		Vector v0 = first.vector;
-		Vector v1 = second.vector;
+		Vector v0 = first.vector.clone().normalize();
+		Vector v1 = second.vector.clone().normalize();
 		double parameter = (v1.getX() * (p1.getY() - p0.getY()) + v1.getY() * (p0.getX() - p1.getX()))
 				/ (v1.getX() * v0.getY() - v1.getY() * v0.getX());
-		return first.getPoint(parameter);
+		return new Line(p0, v0).getPoint(parameter);
 	}
 }

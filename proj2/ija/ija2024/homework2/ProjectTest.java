@@ -234,5 +234,22 @@ public class ProjectTest {
         Point p = Line.intersection(l, m);
         assertEquals(1, p.getX(), "5.1 Intersection wrong");
         assertEquals(1, p.getY(), "5.1 Intersection wrong");
+
+        Segment s = new Segment(new Point(0, 0), new Point(4, 4));
+        Segment t = new Segment(new Point(0, 2), new Point(2, 0));
+        p = Segment.intersection(s, t);
+        assertEquals(1, p.getX(), "5.2 Intersection wrong");
+        assertEquals(1, p.getY(), "5.2 Intersection wrong");
+
+        Segment o = new Segment(new Point(0, 0), new Point(2, 2));
+        Segment n = new Segment(new Point(0, 2), new Point(2, 5));
+        p = Segment.intersection(o, n);
+        assertNull(p, "5.3 Intersection wrong");
+
+        Segment u = new Segment(new Point(0, 0), new Point(2, 2));
+        Segment v = new Segment(new Point(1, 0), new Point(1, 2));
+        p = Segment.intersection(u, v);
+        assertEquals(1, p.getX(), "5.4 Intersection wrong");
+        assertEquals(1, p.getY(), "5.4 Intersection wrong");
     }
 }
