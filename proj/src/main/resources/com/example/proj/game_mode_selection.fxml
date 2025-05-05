@@ -5,7 +5,9 @@
 
 <AnchorPane prefHeight="600.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.proj.MainMenuController">
    <children>
-      <Button fx:id="difficultyBtn" layoutX="248.0" layoutY="86.0" mnemonicParsing="false" onAction="#chooseDifficulty" text="Normal game" />
-      <Button fx:id="logGameButton" layoutX="238.0" layoutY="215.0" mnemonicParsing="false" onAction="#logGameScreen" text="Select log game" />
+      <Button fx:id="difficultyBtn" layoutX="268.0" layoutY="231.0" mnemonicParsing="false" onAction="#chooseDifficulty" text="Easy" />
+      <Button fx:id="logGameButton" layoutX="246.0" layoutY="475.0" mnemonicParsing="false" onAction="#logGameScreen" text="Load Game" />
+      <Button fx:id="difficultyBtn1" layoutX="268.0" layoutY="340.0" mnemonicParsing="false" onAction="#chooseDifficulty" text="Hard" />
+      <Button fx:id="difficultyBtn2" layoutX="258.0" layoutY="288.0" mnemonicParsing="false" onAction="#chooseDifficulty" text="Medium" />
    </children>
 </AnchorPane>

@@ -1,6 +1,7 @@
 package com.example.proj;
 
 import ija.ija2024.homework2.common.Position;
+import ija.ija2024.tool.common.Observable;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
@@ -12,16 +13,17 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import ija.ija2024.homework2.game.Game;
 import ija.ija2024.homework2.common.GameNode;
+import ija.ija2024.homework2.common.Position;
 import ija.ija2024.homework2.common.Type;
 import ija.ija2024.homework2.common.Side;
-
-
-import javafx.scene.input.MouseEvent;
+import ija.ija2024.tool.common.Observable;
+import ija.ija2024.tool.common.Observable.Observer;
 
 import java.util.Arrays;
 import java.util.List;
 
-public class BoardController {
+public class BoardController implements Observer {
+
     private int imageWidth = 50;
     private int imageHeight = 50;
 
@@ -46,6 +48,26 @@ public class BoardController {
     public void backToMenu(ActionEvent event) {
         MainMenuController.changeScreen(event, "game_mode_selection.fxml");
     }
+
+    @Override
+    public void update(Observable o) {
+        if (!(o instanceof GameNode)) return;
+        GameNode node = (GameNode) o;
+
+        Position pos = node.getPosition(); // You must ensure GameNode knows its position
+        int row = pos.getRow() - 1;
+        int col = pos.getCol() - 1;
+
+        ImageView view = boardTitles[row][col];
+
+        // Example update: brightness based on light
+        ColorAdjust lightEffect = new ColorAdjust();
+        lightEffect.setBrightness(node.light() ? 1.0 : 0.0);
+        view.setEffect(lightEffect);
+        System.out.println("WAS UPDATED");
+
+    }
+
 
     public void createBoard(Game game) {
 
@@ -78,10 +100,11 @@ public class BoardController {
                 gridBoard.add(title, col, row);
 
                 if (node.isEmpty()) continue; // SKIP EMPTY
+                node.addObserver(this);
 
                 title.setPickOnBounds(true);
-                title.setOnMouseEntered(enterHoverEvent -> title.setEffect(darkenTitle));
-                title.setOnMouseExited(exitHoverEvent -> title.setEffect(null));
+                //title.setOnMouseEntered(enterHoverEvent -> title.setEffect(darkenTitle));
+                //title.setOnMouseExited(exitHoverEvent -> title.setEffect(null));
                 title.setOnMouseClicked(mouseClickedEvent -> printClickedTitle(title, node));
                 System.out.println(node.toString()); // PRINT ONLY NOT EMPTY
             }
@@ -89,6 +112,30 @@ public class BoardController {
         createdGame = game;
         System.out.println("END BOARD CREATION");
     }
+
+    // NOT IDEAL FIX LATER
+    private boolean allBulbsAreLit() {
+        for (int row = 0; row < createdGame.rows(); row++) {
+            for (int col = 0; col < createdGame.cols(); col++) {
+                GameNode node = createdGame.node(new Position(row + 1, col + 1));
+                if (node != null && node.type == Type.BULB && !node.light()) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    private void endGame() {
+        gridBoard.setDisable(true);
+
+        javafx.scene.control.Alert alert = new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.INFORMATION);
+        alert.setTitle("Game Over");
+        alert.setContentText("every bulb is lit");
+        alert.showAndWait();
+    }
+    // NOT IDEAL FIX LATER
+
 
     private Image selectCorrectImageTitle(GameNode node) {
         Side[] sides = node.sides;
@@ -179,6 +226,10 @@ public class BoardController {
         System.out.println(node.toString());
 
         title.setRotate((title.getRotate() + 90) % 360);
+        if (allBulbsAreLit()) {
+            System.out.println("🎉 All bulbs are lit! You win!");
+            endGame();
+        }
     }
 
     public void logMode(List<String> log) {
@@ -250,5 +301,4 @@ public class BoardController {
         logData = null;
         logLine = 0;
     }
-
 }

@@ -26,7 +26,7 @@ public class GameNode extends AbstractObservableField implements ToolField {
     }
 
 
-    public Position getPosition() {
+    public ija.ija2024.homework2.common.Position getPosition() {
         return this.position;
     }
 
