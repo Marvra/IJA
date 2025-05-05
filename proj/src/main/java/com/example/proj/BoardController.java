@@ -8,6 +8,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.effect.ColorAdjust;
+import javafx.scene.effect.Glow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
@@ -55,16 +56,23 @@ public class BoardController implements Observer {
         if (!(o instanceof GameNode)) return;
         GameNode node = (GameNode) o;
 
-        Position pos = node.getPosition(); // You must ensure GameNode knows its position
+        Position pos = node.getPosition();
         int row = pos.getRow() - 1;
         int col = pos.getCol() - 1;
 
         ImageView view = boardTitles[row][col];
 
-        // Example update: brightness based on light
-        ColorAdjust lightEffect = new ColorAdjust();
-        lightEffect.setBrightness(node.light() ? 1.0 : 0.0);
-        view.setEffect(lightEffect);
+        // VARIANTA S INI PNG PRE LIT
+//        String baseImage = node.light() ? "" : "";
+//        Image newImage = new Image(getClass().getResourceAsStream(baseImage), imageWidth, imageHeight, false, false);
+//        view.setImage(newImage);
+
+        if (node.light()) {
+            Glow glow = new Glow(1.0);
+            view.setEffect(glow);
+        } else {
+            view.setEffect(null);
+        }
         System.out.println("WAS UPDATED");
 
     }
