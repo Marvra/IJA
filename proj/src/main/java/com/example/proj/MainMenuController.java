@@ -1,5 +1,8 @@
 package com.example.proj;
 
+import ija.ija2024.homework2.game.DifficultyLevels.EasyDifficulty;
+import ija.ija2024.homework2.game.DifficultyLevels.GeneralDifficulty;
+import ija.ija2024.homework2.game.GameGenerator;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -49,8 +52,8 @@ public class MainMenuController {
 
     public void chooseDifficulty(ActionEvent event){
         BoardController boardController = changeScreen(event, "board.fxml").getController();
-        GameDifficulty gameDifficulty = new GameDifficulty();
-        Game game = gameDifficulty.generate();
+        GameGenerator generator = new GameGenerator(6, 6, GeneralDifficulty.easy);
+        Game game = generator.generate();
         boardController.createBoard(game);
     }
 

@@ -20,6 +20,7 @@ import ija.ija2024.homework2.common.Side;
 import ija.ija2024.tool.common.Observable;
 import ija.ija2024.tool.common.Observable.Observer;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -90,8 +91,8 @@ public class BoardController implements Observer {
 
         System.out.println("START BOARD CREATION");
 
-        for (int row = 0; row < 4; row++) { // POZOR 4 LEBO BASIC GENERATE JE TERAZ NA 4X4 POLI
-            for (int col = 0; col < 4; col++) { // POZOR 4 LEBO BASIC GENERATE JE TERAZ NA 4X4 POLI
+        for (int row = 0; row < 6; row++) { // POZOR 4 LEBO BASIC GENERATE JE TERAZ NA 4X4 POLI
+            for (int col = 0; col < 6; col++) { // POZOR 4 LEBO BASIC GENERATE JE TERAZ NA 4X4 POLI
 
                 // SKIP EMPTY
 
@@ -206,16 +207,23 @@ public class BoardController implements Observer {
         }
 
         Side[] origSides = node.sides.clone();
-        Arrays.sort(origSides);
-        Arrays.sort(sidesPic);
+//        Arrays.sort(origSides);
+//        Arrays.sort(sidesPic);
 
-        while (!Arrays.equals(origSides, sidesPic)) {
+        while (!sameSides(origSides, sidesPic)) {
             count++;
             rotateRight(sidesPic);
             if(count > 3) break;
         }
         return count;
     }
+
+    private boolean sameSides(Side[] a, Side[] b) {
+        List<Side> listA = new ArrayList<>(Arrays.asList(a));
+        List<Side> listB = new ArrayList<>(Arrays.asList(b));
+        return listA.containsAll(listB) && listB.containsAll(listA);
+    }
+
 
     private void rotateRight(Side[] sides) {
         for (int i = 0; i < sides.length; i++) {
