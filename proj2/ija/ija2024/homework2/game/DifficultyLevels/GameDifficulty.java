@@ -116,12 +116,13 @@ public class GameDifficulty {
 			boolean exists;
 			do {
 				pos = new Position(
-						random.nextInt(this.dimensions - 1) + 1,
-						random.nextInt(this.dimensions - 1) + 1);
+						Math.abs(random.nextInt() % this.dimensions) + 1,
+						Math.abs(random.nextInt() % this.dimensions) + 1);
+				System.out.println("dims: " + this.dimensions);
 				exists = positions.contains(pos);
 				if (positions.size() > 0) {
 					Position power = positions.get(0);
-					if (Math.hypot(pos.getRow() - power.getRow(), pos.getCol() - power.getCol()) < 2) {
+					if (Math.hypot(pos.getRow() - power.getRow(), pos.getCol() - power.getCol()) < 3) {
 						exists = true;
 					}
 				}
