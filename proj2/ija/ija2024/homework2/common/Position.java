@@ -39,4 +39,8 @@ public class Position {
     public int hashCode() {
         return Objects.hash(this.row, this.col);
     }
+    @Override
+    public String toString() {
+        return "(" + this.row + ", " + this.col + ")";
+    }
 }

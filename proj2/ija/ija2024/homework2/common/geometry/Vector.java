@@ -1,6 +1,6 @@
 package ija.ija2024.homework2.common.geometry;
 
-public class Vector {
+public class Vector implements Cloneable {
 	private double x;
 	private double y;
 
@@ -36,5 +36,18 @@ public class Vector {
 		this.x /= length;
 		this.y /= length;
 		return this;
+	}
+
+	public static double dot(Vector a, Vector b) {
+		return a.getX() * b.getX() + a.getY() * b.getY();
+	}
+
+	public double angle() {
+		return Math.atan2(this.y, this.x);
+	}
+
+	@Override
+	public Vector clone() {
+		return new Vector(this.x, this.y);
 	}
 }
