@@ -1,41 +1,95 @@
 package ija.ija2024.homework2.game.DifficultyLevels;
 
-import java.util.Random;
+import java.util.random.*;
 
 import ija.ija2024.homework2.common.GameNode;
 import ija.ija2024.homework2.common.Position;
 import ija.ija2024.homework2.common.Side;
+import ija.ija2024.homework2.common.Type;
+import ija.ija2024.homework2.common.geometry.Point;
+import ija.ija2024.homework2.common.geometry.Segment;
+import ija.ija2024.homework2.common.geometry.Vector;
 import ija.ija2024.homework2.game.Game;
+import java.util.ArrayList;
 import java.util.List;
 
 public class MediumDifficulty extends GameDifficulty {
-	public MediumDifficulty() {
-		super.difficulty = GeneralDifficulty.medium;
-		super.dimensions = 8;
-	}
+    public MediumDifficulty() {
+        super.difficulty = GeneralDifficulty.medium;
+        super.dimensions = 8;
+    }
 
-	@Override
-	public Game generate() {
-		Game game = new Game(super.dimensions, super.dimensions);
-		List<GameNode> nodes = new java.util.ArrayList<>();
-        // creating power node with all sides
-        Random rand = new Random();
-        int row = rand.nextInt(super.dimensions - 2) + 1;
-        int col = rand.nextInt(super.dimensions - 2) + 1;
-        nodes.add(game.createPowerNode(new Position(row, col), Side.NORTH, Side.SOUTH, Side.WEST, Side.EAST));
+    @Override
+    public Game generate() {
+        Game game = Game.create(super.dimensions, super.dimensions);
+        List<Position> positions = super.generatePositions(3, 5);
+        List<Position> originals = new ArrayList<>(positions);
+        List<Segment> segments = new ArrayList<>();
+        for(Position o: originals){
+            System.out.println(Point.fromPosition(o));
+        }
+        // make segments between nodes
+        for (int i = 0; i < positions.size(); i++) {
+            for (int j = i + 1; j < positions.size(); j++) {
+                Point p1 = Point.fromPosition(positions.get(i));
+                Point p2 = Point.fromPosition(positions.get(j));
+                segments.add(new Segment(p1, p2));
+            }
+        }
 
-        // creating lightbulb node with all sides
-        int lightbulbRow = row;
-        int lightbulbCol = col;
-        do {
-            lightbulbRow = rand.nextInt(super.dimensions - 2) + 1;
-            lightbulbCol = rand.nextInt(super.dimensions - 2) + 1;
-        } while (Math.abs(lightbulbRow - row) < 3 && Math.abs(lightbulbCol - col) < 3);
-        nodes.add(game.createBulbNode(new Position(lightbulbRow, lightbulbCol), Side.NORTH, Side.SOUTH, Side.WEST, Side.EAST));
-
-		// TODO: interroute nodes with links
-		
-		return game;
-	}
+        // add intersections of segments
+        for (int i = 0; i < segments.size(); i++) {
+            for (int j = i + 1; j < segments.size(); j++) {
+                Point p1 = Segment.intersection(segments.get(i), segments.get(j));
+                if (p1 != null) {
+                    if (!positions.contains(p1.toPosition())) {
+                        positions.add(p1.toPosition());
+                    }
+                }
+            }
+        }
+        segments.clear();
+        List<Point> points = new ArrayList<>();
+        for (Position p : positions) {
+            points.add(Point.fromPosition(p));
+        }
+        segments = mst(points);
+        List<Position> newPositions = new ArrayList<>();
+        for (Segment s : segments) {
+            newPositions = merge(newPositions, s.rasterize());
+        }
+        List<GameNode> nodes = super.convertToLinks(newPositions, game);
+        game.print();
+        Position position = originals.get(0);
+        for (GameNode n : game.neighours(position)) {
+            if(n.type == Type.LINK) {
+                double roun = ((new Vector(Point.fromPosition(position), Point.fromPosition(n.getPosition())).angle()));
+                if (roun < 0) {
+                    roun = 2 * Math.PI - roun;
+                }
+                game.createPowerNode(position, Side.values()[(int) ((roun / Math.PI) * 2) % 4]);
+                break;
+            }
+        }
+        originals.remove(0);
+ 
+        while (!originals.isEmpty()) {
+            position = originals.get(0);
+            for (GameNode n : game.neighours(position)) {
+                if(n.type == Type.LINK) {
+                    double roun = ((new Vector(Point.fromPosition(position), Point.fromPosition(n.getPosition())).angle()));
+                    if (roun < 0) {
+                        roun = 2 * Math.PI - roun;
+                    }
+                    game.createBulbNode(position, Side.values()[(int) ((roun / Math.PI) * 2) % 4]);
+                    break;
+                }
+            }
+            originals.remove(0);
+            
+        }
+        game.print();
+        return game;
+    }
 
 }

@@ -42,6 +42,10 @@ public class Vector implements Cloneable {
 		return a.getX() * b.getX() + a.getY() * b.getY();
 	}
 
+	public double angle() {
+		return Math.atan2(this.y, this.x);
+	}
+
 	@Override
 	public Vector clone() {
 		return new Vector(this.x, this.y);

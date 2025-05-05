@@ -33,4 +33,9 @@ public class Point {
 		return Math.sqrt(dx * dx + dy * dy);
 	}
 
+	@Override
+	public String toString() {
+		return "[" + x + ", " + y + "]";
+	}
+
 }

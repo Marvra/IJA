@@ -78,4 +78,17 @@ public class Segment extends Line {
 	public double length() {
 		return vector.length();
 	}
+
+	public Point getStart() {
+		return start;
+	}
+
+	public Point getEnd() {
+		return this.getPoint(1);
+	}
+
+	@Override
+	public String toString() {
+		return "(" + getStart().toString() + ", " + getEnd().toString() + ")";
+	}
 }
