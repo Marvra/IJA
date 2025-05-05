@@ -26,6 +26,7 @@ public class BoardController implements Observer {
 
     private int imageWidth = 50;
     private int imageHeight = 50;
+    private int MaxMoves = -1; // get maxmoves from game or somwwhere idk
 
     @FXML
     GridPane gridBoard;
@@ -76,8 +77,8 @@ public class BoardController implements Observer {
         boardTitles = new ImageView[game.rows()][game.cols()];
 
 
-        ColorAdjust darkenTitle =  new ColorAdjust();
-        darkenTitle.setBrightness(-0.5);
+        ColorAdjust litTitle =  new ColorAdjust();
+        litTitle.setBrightness(1.0);
 
         System.out.println("START BOARD CREATION");
 
@@ -106,10 +107,16 @@ public class BoardController implements Observer {
                 //title.setOnMouseEntered(enterHoverEvent -> title.setEffect(darkenTitle));
                 //title.setOnMouseExited(exitHoverEvent -> title.setEffect(null));
                 title.setOnMouseClicked(mouseClickedEvent -> printClickedTitle(title, node));
+                //update(node);
                 System.out.println(node.toString()); // PRINT ONLY NOT EMPTY
             }
         }
+
+
         createdGame = game;
+//        ImageView title = boardTitles[createdGame.powerCol][createdGame.powerRow];
+//
+//        title.setRotate((title.getRotate() + 90) % 360);
         System.out.println("END BOARD CREATION");
     }
 
@@ -164,7 +171,6 @@ public class BoardController implements Observer {
         } else {
             base = base + "_" + count + ".png"; // napr.: L_2,P_3 etc.
         }
-
         return new Image(getClass().getResourceAsStream(base), imageHeight, imageWidth, false, false);
     }
 
@@ -226,8 +232,8 @@ public class BoardController implements Observer {
         System.out.println(node.toString());
 
         title.setRotate((title.getRotate() + 90) % 360);
+
         if (allBulbsAreLit()) {
-            System.out.println("🎉 All bulbs are lit! You win!");
             endGame();
         }
     }
