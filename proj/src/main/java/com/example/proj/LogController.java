@@ -1,12 +1,10 @@
 package com.example.proj;
 
-import com.sun.tools.javac.Main;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Files;
@@ -23,7 +21,6 @@ import ija.ija2024.homework2.common.Position;
 import ija.ija2024.homework2.common.Side;
 import ija.ija2024.homework2.common.Type;
 import ija.ija2024.homework2.game.Game;
-import org.ietf.jgss.GSSManager;
 
 public class LogController {
     @FXML
@@ -86,7 +83,6 @@ public class LogController {
             e.printStackTrace();
             return null;
         }
-
         Game game = Game.create(4, 4); // or dynamic
 
         boolean inBoardSection = false;
