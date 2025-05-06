@@ -158,14 +158,22 @@ public class GameDifficulty {
 			}
 		}
 		Collections.sort(edges, Comparator.comparingDouble(Edge::distance));
-		for (Edge e : edges) {
-			if (!visited.contains(e.a) || !visited.contains(e.b)) {
-				mst.add(new Segment(e.a, e.b));
-				visited.add(e.a);
-				visited.add(e.b);
-			}
-			if (visited.size() == points.size()) {
-				break;
+		mst.add(new Segment(edges.get(0).a, edges.get(0).b));
+		visited.add(edges.get(0).a);
+		visited.add(edges.get(0).b);
+		edges.remove(0);
+		for (int i = 0; i < Math.pow(2, points.size()) && visited.size() < points.size(); i++) {
+
+			for (Edge e : edges) {
+				if ((visited.contains(e.a) && !visited.contains(e.b))
+						|| (visited.contains(e.b) && !visited.contains(e.a))) {
+					mst.add(new Segment(e.a, e.b));
+					visited.add(e.a);
+					visited.add(e.b);
+				}
+				if (visited.size() == points.size()) {
+					break;
+				}
 			}
 		}
 		return mst;
