@@ -92,8 +92,8 @@ public class BoardController implements Observer {
 
         System.out.println("START BOARD CREATION");
 
-        for (int row = 0; row < 8; row++) { // POZOR 4 LEBO BASIC GENERATE JE TERAZ NA 4X4 POLI
-            for (int col = 0; col < 8; col++) { // POZOR 4 LEBO BASIC GENERATE JE TERAZ NA 4X4 POLI
+        for (int row = 0; row < game.rows(); row++) { // POZOR 4 LEBO BASIC GENERATE JE TERAZ NA 4X4 POLI
+            for (int col = 0; col < game.cols(); col++) { // POZOR 4 LEBO BASIC GENERATE JE TERAZ NA 4X4 POLI
 
                 // SKIP EMPTY
 

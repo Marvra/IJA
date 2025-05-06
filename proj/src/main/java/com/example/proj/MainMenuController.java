@@ -52,7 +52,7 @@ public class MainMenuController {
 
     public void chooseDifficulty(ActionEvent event){
         BoardController boardController = changeScreen(event, "board.fxml").getController();
-        GameGenerator generator = new GameGenerator(6, 6, GeneralDifficulty.easy);
+        GameGenerator generator = new GameGenerator(8, 8, GeneralDifficulty.medium);
         Game game = generator.generate();
         boardController.createBoard(game);
     }
