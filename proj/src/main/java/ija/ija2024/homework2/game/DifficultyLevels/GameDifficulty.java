@@ -107,22 +107,31 @@ public class GameDifficulty {
 		List<Position> positions = new ArrayList<>();
 
 		int lightbulbs = random.nextInt(maximum - minimum + 1) + minimum;
+		int tries = 120;
 		for (int i = 0; i <= lightbulbs; i++) {
 			Position pos;
 			boolean exists;
+			tries = 120;
 			do {
 				pos = new Position(
-						Math.abs(random.nextInt() % this.dimensions) + 1,
-						Math.abs(random.nextInt() % this.dimensions) + 1);
+						Math.abs(random.nextInt() % (this.dimensions - 3)) + 2,
+						Math.abs(random.nextInt() % (this.dimensions - 3)) + 2);
 				System.out.println("dims: " + this.dimensions);
 				exists = positions.contains(pos);
 				if (positions.size() > 0) {
 					Position power = positions.get(0);
-					if (Math.hypot(pos.getRow() - power.getRow(), pos.getCol() - power.getCol()) < 3) {
+					if (Math.hypot(pos.getRow() - power.getRow(), pos.getCol() - power.getCol()) < 2) {
 						exists = true;
 					}
 				}
+				if (tries >= 0)
+					tries--;
+				else
+					break;
 			} while (exists);
+			if (tries < 0) {
+				break;
+			}
 			positions.add(pos);
 		}
 		return positions;
