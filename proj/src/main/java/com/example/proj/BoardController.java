@@ -57,7 +57,6 @@ public class BoardController implements Observer {
         if (!(o instanceof GameNode))
             return;
         GameNode node = (GameNode) o;
-
         Position pos = node.getPosition();
         int row = pos.getRow() - 1;
         int col = pos.getCol() - 1;
@@ -302,7 +301,6 @@ public class BoardController implements Observer {
     private void updateGame(String line) {
         Position position = LogController.stringToGameNode(line, createdGame, true);
         printClickedTitle(boardTitles[position.getRow() - 1][position.getCol() - 1], createdGame.node(position));
-
     }
 
     public void playMode(ActionEvent event) {

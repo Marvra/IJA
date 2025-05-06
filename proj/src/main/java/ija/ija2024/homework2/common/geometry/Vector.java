@@ -50,4 +50,9 @@ public class Vector implements Cloneable {
 	public Vector clone() {
 		return new Vector(this.x, this.y);
 	}
+
+	@Override
+	public String toString() {
+		return "(" + this.x + ", " + this.y + ")";
+	}
 }

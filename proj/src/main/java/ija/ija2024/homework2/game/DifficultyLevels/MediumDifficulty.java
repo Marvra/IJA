@@ -67,7 +67,7 @@ public class MediumDifficulty extends GameDifficulty {
             for (GameNode n : game.neighours(position)) {
                 if (n.type == Type.LINK) {
                     Vector v = new Vector(Point.fromPosition(position), Point.fromPosition(n.getPosition()));
-                    double roun = v.angle();
+                    double roun = -v.angle();
                     System.out.println(v);
                     if (roun < 0) {
                         roun = Math.PI + roun;
@@ -85,7 +85,7 @@ public class MediumDifficulty extends GameDifficulty {
             for (GameNode n : empties) {
                 Vector v = new Vector(Point.fromPosition(position), Point.fromPosition(n.getPosition()));
                 System.out.println(v);
-                double roun = v.angle();
+                double roun = -v.angle();
                 if (roun < 0) {
                     roun = Math.PI + roun;
                 }
@@ -107,8 +107,8 @@ public class MediumDifficulty extends GameDifficulty {
                 for (GameNode n : game.neighours(position)) {
                     if (n.type == Type.LINK) {
                         Vector v = new Vector(Point.fromPosition(position), Point.fromPosition(n.getPosition()));
+                        double roun = -v.angle();
                         System.out.println(v);
-                        double roun = v.angle();
                         if (roun < 0) {
                             roun = Math.PI + roun;
                         }
@@ -124,7 +124,7 @@ public class MediumDifficulty extends GameDifficulty {
                 List<GameNode> empties = game.empties(position);
                 for (GameNode n : empties) {
                     Vector v = new Vector(Point.fromPosition(position), Point.fromPosition(n.getPosition()));
-                    double roun = v.angle();
+                    double roun = -v.angle();
                     System.out.println(v);
                     if (roun < 0) {
                         roun = Math.PI + roun;

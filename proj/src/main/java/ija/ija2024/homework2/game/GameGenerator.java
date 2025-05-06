@@ -20,8 +20,8 @@ public class GameGenerator {
     private static final Map<GeneralDifficulty, Supplier<GameDifficulty>> difficultyMap = new HashMap<>();
 
     static {
-        difficultyMap.put(GeneralDifficulty.medium, () -> new MediumDifficulty());
         difficultyMap.put(GeneralDifficulty.easy, () -> new EasyDifficulty());
+        difficultyMap.put(GeneralDifficulty.medium, () -> new MediumDifficulty());
         // TODO: Add more difficulty levels and their corresponding constructors
     }
 
