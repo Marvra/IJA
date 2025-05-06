@@ -74,7 +74,7 @@ public class MediumDifficulty extends GameDifficulty {
                     }
                     System.out.println(roun / Math.PI + " PI");
                     game.createPowerNode(position, Side.values()[(int) ((roun / Math.PI) * 2 + 5) % 4]);
-                    Side[] newSides = Arrays.copyOf(n.sides, n.sides.size() + 1);
+                    Side[] newSides = n.sides.toArray(new Side[n.sides.size() + 1]);
                     newSides[n.sides.size()] = Side.values()[(int) ((roun / Math.PI) * 2 + 7) % 4];
                     n.setSides(newSides);
                     break;
@@ -91,7 +91,7 @@ public class MediumDifficulty extends GameDifficulty {
                 }
                 System.out.println(roun / Math.PI + " PI");
                 game.createPowerNode(n.getPosition(), Side.values()[(int) ((roun / Math.PI) * 2 + 7) % 4]);
-                Side[] newSides = Arrays.copyOf(game.node(position).sides, game.node(position).sides.size() + 1);
+                Side[] newSides = game.node(position).sides.toArray(new Side[game.node(position).sides.size() + 1]);
                 newSides[game.node(position).sides.size()] = Side.values()[(int) ((roun / Math.PI) * 2 + 5) % 4];
                 game.node(position).setSides(newSides);
                 break;
@@ -114,7 +114,7 @@ public class MediumDifficulty extends GameDifficulty {
                         }
                         System.out.println(roun / Math.PI + " PI");
                         game.createBulbNode(position, Side.values()[(int) ((roun / Math.PI) * 2 + 5) % 4]);
-                        Side[] newSides = Arrays.copyOf(n.sides, n.sides.size() + 1);
+                        Side[] newSides = n.sides.toArray(new Side[n.sides.size() + 1]);
                         newSides[n.sides.size()] = Side.values()[(int) ((roun / Math.PI) * 2 + 7) % 4];
                         n.setSides(newSides);
                         break;
@@ -131,7 +131,7 @@ public class MediumDifficulty extends GameDifficulty {
                     }
                     System.out.println(roun / Math.PI + " PI");
                     game.createBulbNode(n.getPosition(), Side.values()[(int) ((roun / Math.PI) * 2 + 7) % 4]);
-                    Side[] newSides = Arrays.copyOf(game.node(position).sides, game.node(position).sides.size() + 1);
+                    Side[] newSides = game.node(position).sides.toArray(new Side[game.node(position).sides.size() + 1]);
                     newSides[game.node(position).sides.size()] = Side.values()[(int) ((roun / Math.PI) * 2 + 5) % 4];
                     game.node(position).setSides(newSides);
                     break;

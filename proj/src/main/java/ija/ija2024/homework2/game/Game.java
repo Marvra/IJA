@@ -113,6 +113,9 @@ public class Game implements ToolEnvironment, Observer {
 
     public void traverseNodes(int row, int col, Side sideFromConnected, boolean notify)
     {
+        if(row <  1 || col < 1 || row >= rows || col >= cols ) {
+            return;
+        }
         GameNode currNode = this.nodes[row][col];
         if(currNode == null || currNode.isEmpty() || currNode.light()) {
             return;

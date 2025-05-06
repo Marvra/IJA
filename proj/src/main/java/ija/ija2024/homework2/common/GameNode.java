@@ -3,12 +3,13 @@ package ija.ija2024.homework2.common;
 import ija.ija2024.tool.common.AbstractObservableField;
 import ija.ija2024.tool.common.ToolField;
 import java.util.Arrays;
+import java.util.HashSet;
 
 public class GameNode extends AbstractObservableField implements ToolField {
 
-    public ija.ija2024.homework2.common.Side[] sides;
+    public HashSet<Side> sides;
 
-    public ija.ija2024.homework2.common.Type type;
+    public Type type;
     Position position;
     boolean light = false;
 
@@ -19,10 +20,9 @@ public class GameNode extends AbstractObservableField implements ToolField {
         this.position = position;
 
         if (sides != null) {
-            this.sides = new Side[sides.length];
-            this.sides = sides;
+            this.sides = new HashSet<>(Arrays.asList(sides));
         } else {
-            this.sides = new Side[0];
+            this.sides = new HashSet<>();
         }
     }
 
@@ -36,24 +36,26 @@ public class GameNode extends AbstractObservableField implements ToolField {
     }
 
     public void turn() {
-        for (int i = 0; i < this.sides.length; i++) {
-            switch (this.sides[i]) {
+        HashSet<Side> newSides = new HashSet<>();
+        for (Side side : this.sides) {
+            switch (side) {
                 case NORTH:
-                    this.sides[i] = Side.EAST;
+                    newSides.add(Side.EAST);
                     break;
                 case EAST:
-                    this.sides[i] = Side.SOUTH;
+                    newSides.add(Side.SOUTH);
                     break;
                 case SOUTH:
-                    this.sides[i] = Side.WEST;
+                    newSides.add(Side.WEST);
                     break;
                 case WEST:
-                    this.sides[i] = Side.NORTH;
+                    newSides.add(Side.NORTH);
                     break;
                 default:
                     break;
-            }   
+            }
         }
+        this.sides = newSides;
         notifyObservers();
     }
 
@@ -62,7 +64,7 @@ public class GameNode extends AbstractObservableField implements ToolField {
     }
 
     public void setSides(Side ... s) {
-        this.sides = s;
+        this.sides = new HashSet<>(Arrays.asList(s));
     }
     
 
@@ -101,11 +103,7 @@ public class GameNode extends AbstractObservableField implements ToolField {
         if (this.sides == null) {
             return false;
         }
-
-        for (Side side : this.sides) {
-            if(side == s) return true;
-        }
-        return false;
+        return this.sides.contains(s);
     }
     public boolean east() {
         return containsConnector(Side.EAST);
@@ -125,17 +123,17 @@ public class GameNode extends AbstractObservableField implements ToolField {
 
     @Override
     public String toString() {
-
-        String sidesString = "";
-        int sidesLength = this.sides.length;
-        Arrays.sort(this.sides);
-
-        for (int i = 0; i < sidesLength; i++) {
-            sidesString += this.sides[i].toString();
-            sidesString += i != this.sides.length-1 ? "," : "";
+        StringBuilder sidesStringBuilder = new StringBuilder();
+        for (Side s : this.sides) {
+            sidesStringBuilder.append(s.toString()).append(",");
         }
 
-        return "{" + this.type.toString() + "[" + this.position.getRow() + "@" + this.position.getCol() + "][" + sidesString + "]}";
+        // Remove the trailing comma if sides is not empty
+        if (!this.sides.isEmpty()) {
+            sidesStringBuilder.setLength(sidesStringBuilder.length() - 1);
+        }
+
+        return "{" + this.type.toString() + "[" + this.position.getRow() + "@" + this.position.getCol() + "]" + this.sides.toString() + "}";
     }
 
 }

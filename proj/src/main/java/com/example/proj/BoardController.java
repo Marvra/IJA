@@ -23,6 +23,7 @@ import ija.ija2024.tool.common.Observable.Observer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.HashSet;
 
 public class BoardController implements Observer {
 
@@ -45,7 +46,6 @@ public class BoardController implements Observer {
     private List<String> logData;
     private int logLine = 0;
 
-
     private ImageView[][] boardTitles;
 
     public void backToMenu(ActionEvent event) {
@@ -54,7 +54,8 @@ public class BoardController implements Observer {
 
     @Override
     public void update(Observable o) {
-        if (!(o instanceof GameNode)) return;
+        if (!(o instanceof GameNode))
+            return;
         GameNode node = (GameNode) o;
 
         Position pos = node.getPosition();
@@ -64,9 +65,10 @@ public class BoardController implements Observer {
         ImageView view = boardTitles[row][col];
 
         // VARIANTA S INI PNG PRE LIT
-//        String baseImage = node.light() ? "" : "";
-//        Image newImage = new Image(getClass().getResourceAsStream(baseImage), imageWidth, imageHeight, false, false);
-//        view.setImage(newImage);
+        // String baseImage = node.light() ? "" : "";
+        // Image newImage = new Image(getClass().getResourceAsStream(baseImage),
+        // imageWidth, imageHeight, false, false);
+        // view.setImage(newImage);
 
         if (node.light()) {
             Glow glow = new Glow(1.0);
@@ -78,54 +80,54 @@ public class BoardController implements Observer {
 
     }
 
-
     public void createBoard(Game game) {
 
-        if(game == null) return;
+        if (game == null)
+            return;
 
         boardTitles = new ImageView[game.rows()][game.cols()];
 
-
-        ColorAdjust litTitle =  new ColorAdjust();
+        ColorAdjust litTitle = new ColorAdjust();
         litTitle.setBrightness(1.0);
 
         System.out.println("START BOARD CREATION");
 
-        for (int row = 0; row < 6; row++) { // POZOR 4 LEBO BASIC GENERATE JE TERAZ NA 4X4 POLI
-            for (int col = 0; col < 6; col++) { // POZOR 4 LEBO BASIC GENERATE JE TERAZ NA 4X4 POLI
+        for (int row = 0; row < 8; row++) { // POZOR 4 LEBO BASIC GENERATE JE TERAZ NA 4X4 POLI
+            for (int col = 0; col < 8; col++) { // POZOR 4 LEBO BASIC GENERATE JE TERAZ NA 4X4 POLI
 
                 // SKIP EMPTY
 
-                GameNode node = game.node(new Position(row+1,col+1));
+                GameNode node = game.node(new Position(row + 1, col + 1));
 
-
+                if (node == null)
+                    continue;
                 Image image = selectCorrectImageTitle(node);
 
                 ImageView title = new ImageView(image);
 
-                int numberOfRotations = numberOfRotations(node.sides.length, node);
+                int numberOfRotations = numberOfRotations(node.sides.size(), node);
                 title.setRotate((title.getRotate() + 90 * numberOfRotations) % 360);
 
                 boardTitles[row][col] = title;
                 gridBoard.add(title, col, row);
 
-                if (node.isEmpty()) continue; // SKIP EMPTY
+                if (node.isEmpty())
+                    continue; // SKIP EMPTY
                 node.addObserver(this);
 
                 title.setPickOnBounds(true);
-                //title.setOnMouseEntered(enterHoverEvent -> title.setEffect(darkenTitle));
-                //title.setOnMouseExited(exitHoverEvent -> title.setEffect(null));
+                // title.setOnMouseEntered(enterHoverEvent -> title.setEffect(darkenTitle));
+                // title.setOnMouseExited(exitHoverEvent -> title.setEffect(null));
                 title.setOnMouseClicked(mouseClickedEvent -> printClickedTitle(title, node));
-                //update(node);
+                // update(node);
                 System.out.println(node.toString()); // PRINT ONLY NOT EMPTY
             }
         }
 
-
         createdGame = game;
-//        ImageView title = boardTitles[createdGame.powerCol][createdGame.powerRow];
-//
-//        title.setRotate((title.getRotate() + 90) % 360);
+        // ImageView title = boardTitles[createdGame.powerCol][createdGame.powerRow];
+        //
+        // title.setRotate((title.getRotate() + 90) % 360);
         System.out.println("END BOARD CREATION");
     }
 
@@ -145,16 +147,16 @@ public class BoardController implements Observer {
     private void endGame() {
         gridBoard.setDisable(true);
 
-        javafx.scene.control.Alert alert = new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.INFORMATION);
+        javafx.scene.control.Alert alert = new javafx.scene.control.Alert(
+                javafx.scene.control.Alert.AlertType.INFORMATION);
         alert.setTitle("Game Over");
         alert.setContentText("every bulb is lit");
         alert.showAndWait();
     }
     // NOT IDEAL FIX LATER
 
-
     private Image selectCorrectImageTitle(GameNode node) {
-        Side[] sides = node.sides;
+        HashSet<Side> sides = node.sides;
         Type type = node.type;
         String base = type.toString(); // B L P
 
@@ -167,11 +169,11 @@ public class BoardController implements Observer {
             base = base + ".png"; // B.png
             return new Image(getClass().getResourceAsStream(base), imageHeight, imageWidth, false, false);
         }
-        //System.out.println(base);
+        // System.out.println(base);
 
-        int count = sides.length;
+        int count = sides.size();
 
-        if(count == 2) {
+        if (count == 2) {
             if (node.north() && node.south() || node.west() && node.east()) { // ROVNA NODE
                 base = base + "_" + count + ".png";
             } else { // L NODE
@@ -183,61 +185,57 @@ public class BoardController implements Observer {
         return new Image(getClass().getResourceAsStream(base), imageHeight, imageWidth, false, false);
     }
 
-
     private int numberOfRotations(int numberOfSides, GameNode node) {
         int count = 0;
-        Side[] sidesPic;
+        List<Side> sidesPic;
 
-
-        if(numberOfSides == 1 ) { // B, P_1
-            sidesPic = new Side[]{Side.EAST};
+        if (numberOfSides == 1) { // B, P_1
+            sidesPic = Arrays.asList(Side.EAST);
         } else if (numberOfSides == 2) {
 
             if ((node.north() && node.south()) || (node.east() && node.west())) {
-                sidesPic = new Side[]{Side.EAST, Side.WEST};
-            }
-            else {
-                sidesPic = new Side[]{Side.EAST, Side.SOUTH};
+                sidesPic = Arrays.asList(Side.EAST, Side.WEST);
+            } else {
+                sidesPic = Arrays.asList(Side.EAST, Side.SOUTH);
             }
 
         } else if (numberOfSides == 3) {
-            sidesPic = new Side[]{Side.EAST, Side.WEST, Side.SOUTH};
+            sidesPic = Arrays.asList(Side.EAST, Side.WEST, Side.SOUTH);
         } else {
             return 0;
         }
 
-        Side[] origSides = node.sides.clone();
-//        Arrays.sort(origSides);
-//        Arrays.sort(sidesPic);
+        List<Side> origSides = new ArrayList<>(node.sides);
+        // Arrays.sort(origSides);
+        // Arrays.sort(sidesPic);
 
         while (!sameSides(origSides, sidesPic)) {
             count++;
             rotateRight(sidesPic);
-            if(count > 3) break;
+            if (count > 3)
+                break;
         }
         return count;
     }
-
-    private boolean sameSides(Side[] a, Side[] b) {
-        List<Side> listA = new ArrayList<>(Arrays.asList(a));
-        List<Side> listB = new ArrayList<>(Arrays.asList(b));
+    
+    private boolean sameSides(List<Side> a, List<Side> b) {
+        List<Side> listA = new ArrayList<>(a);
+        List<Side> listB = new ArrayList<>(b);
         return listA.containsAll(listB) && listB.containsAll(listA);
     }
 
-
-    private void rotateRight(Side[] sides) {
-        for (int i = 0; i < sides.length; i++) {
-            sides[i] = switch (sides[i]) {
+    private void rotateRight(List<Side> sides) {
+        for (int i = 0; i < sides.size(); i++) {
+            sides.set(i, switch (sides.get(i)) {
                 case NORTH -> Side.EAST;
                 case EAST -> Side.SOUTH;
                 case SOUTH -> Side.WEST;
                 case WEST -> Side.NORTH;
-            };
+            });
         }
     }
 
-
-    private void printClickedTitle (ImageView title, GameNode node) {
+    private void printClickedTitle(ImageView title, GameNode node) {
 
         Integer hoveredRow = GridPane.getRowIndex(title);
         Integer hoveredCol = GridPane.getColumnIndex(title);
@@ -256,7 +254,7 @@ public class BoardController implements Observer {
 
     public void logMode(List<String> log) {
         logData = log;
-        ColorAdjust darkenBoard =  new ColorAdjust();
+        ColorAdjust darkenBoard = new ColorAdjust();
         darkenBoard.setBrightness(-0.5);
         gridBoard.setEffect(darkenBoard);
         gridBoard.setDisable(true);
@@ -301,10 +299,9 @@ public class BoardController implements Observer {
         }
     }
 
-
     private void updateGame(String line) {
         Position position = LogController.stringToGameNode(line, createdGame, true);
-        printClickedTitle(boardTitles[position.getRow()-1][position.getCol()-1], createdGame.node(position));
+        printClickedTitle(boardTitles[position.getRow() - 1][position.getCol() - 1], createdGame.node(position));
 
     }
 
