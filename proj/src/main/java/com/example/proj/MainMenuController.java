@@ -50,12 +50,15 @@ public class MainMenuController {
         changeScreen(event, "game_mode_selection.fxml");
     }
 
-    public void chooseDifficulty(ActionEvent event){
+    private void chooseDifficulty(ActionEvent event, GeneralDifficulty difficulty, int dimensions){
         BoardController boardController = changeScreen(event, "board.fxml").getController();
-        GameGenerator generator = new GameGenerator(8, 8, GeneralDifficulty.medium);
+        GameGenerator generator = new GameGenerator(dimensions, dimensions, difficulty);
         Game game = generator.generate();
         boardController.createBoard(game);
     }
+
+    public void easyDifficulty(ActionEvent event){chooseDifficulty(event, GeneralDifficulty.easy, 6);}
+    public void mediumDifficulty(ActionEvent event){chooseDifficulty(event, GeneralDifficulty.medium, 8);}
 
     public void logGameScreen(ActionEvent event){
         changeScreen(event, "log_game_selection.fxml");

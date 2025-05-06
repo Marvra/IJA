@@ -21,6 +21,7 @@ public class GameGenerator {
 
     static {
         difficultyMap.put(GeneralDifficulty.medium, () -> new MediumDifficulty());
+        difficultyMap.put(GeneralDifficulty.easy, () -> new EasyDifficulty());
         // TODO: Add more difficulty levels and their corresponding constructors
     }
 
