@@ -59,6 +59,7 @@ public class BoardController implements Observer {
 
     // HELP
     private HelpWindowController helpWindowController;
+    private Stage helpWindowStage;
     private Game copyGame;
     // HELP
 
@@ -72,6 +73,17 @@ public class BoardController implements Observer {
     private ImageView[][] boardTitles;
 
     public void backToMenu(ActionEvent event) {
+
+        if (timer != null) {
+            timer.stop();
+            timer = null;
+        }
+
+        if (helpWindowStage != null) {
+            helpWindowStage.close();
+            helpWindowStage = null;
+        }
+
         MainMenuController.changeScreen(event, "game_mode_selection.fxml");
     }
 
@@ -85,10 +97,10 @@ public class BoardController implements Observer {
 
             helpWindowController.initHelpBoard(createdGame, copyGame, gridBoard, boardTitles);
 
-            Stage stage = new Stage();
-            stage.setTitle("Help");
-            stage.setScene(new Scene(root));
-            stage.show();
+            helpWindowStage = new Stage();
+            helpWindowStage.setTitle("Help");
+            helpWindowStage.setScene(new Scene(root));
+            helpWindowStage.show();
 
         } catch (IOException e) {
             e.printStackTrace();
