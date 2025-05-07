@@ -17,6 +17,8 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 
 public class HelpWindowController {
 
@@ -48,7 +50,7 @@ public class HelpWindowController {
                 GameNode currentNode = currentGame.node(pos);
                 GameNode originalNode = originalGame.node(pos);
 
-                StackPane tile = createTile(row, col, currentNode, originalNode);
+                StackPane tile = createTile(row, col, currentNode, originalNode, false);
                 gridHelpBoard.add(tile, col, row);
             }
         }
@@ -78,12 +80,12 @@ public class HelpWindowController {
         });
 
         GameNode originalNode = originalGame.node(pos);
-        StackPane tile = createTile(row, col, node, originalNode);
+        StackPane tile = createTile(row, col, node, originalNode, true);
         gridHelpBoard.add(tile, col, row);
     }
 
 
-    private StackPane createTile(int row, int col, GameNode currentNode, GameNode originalNode) {
+    private StackPane createTile(int row, int col, GameNode currentNode, GameNode originalNode, boolean update) {
         ImageView originalImageView = boardTitles[row][col];
         ImageView cloned = new ImageView(originalImageView.getImage());
 
@@ -96,22 +98,42 @@ public class HelpWindowController {
         StackPane stack = new StackPane(cloned);
 
         if (currentNode != null && originalNode != null && !currentNode.isEmpty()) {
-            int rotations = BoardController.countRotationsToMatch(
+            int rotations = update ? rotationsToMatchOriginal(
+                    new ArrayList<>(currentNode.sides),
+                    new ArrayList<>(originalNode.sides)
+            ) : BoardController.countRotationsToMatch(
                     new ArrayList<>(currentNode.sides),
                     new ArrayList<>(originalNode.sides)
             );
 
-            if (rotations >= 0 && rotations < 4) {
-                Label label = new Label(String.valueOf(rotations));
-                label.setFont(Font.font("Arial", FontWeight.BOLD, 16));
-                label.setTextFill(Color.RED);
-                StackPane.setAlignment(label, Pos.BOTTOM_RIGHT);
-                stack.getChildren().add(label);
-            }
+            Label label = new Label(String.valueOf(rotations));
+            label.setFont(Font.font("Arial", FontWeight.BOLD, 16));
+            label.setTextFill(Color.RED);
+            StackPane.setAlignment(label, Pos.BOTTOM_RIGHT);
+            stack.getChildren().add(label);
         }
 
         stack.setMouseTransparent(true);
         return stack;
     }
+
+    public static int rotationsToMatchOriginal(List<Side> current, List<Side> target) {
+        List<Side> targetCopy = new ArrayList<>(target);
+        targetCopy.sort(Comparator.naturalOrder());
+        // HASHHHHEESTET
+        for (int i = 0; i < 4; i++) {
+            List<Side> currentCopy = new ArrayList<>(current);
+            currentCopy.sort(Comparator.naturalOrder());
+
+            if (currentCopy.equals(targetCopy)) {
+                return i;
+            }
+
+            BoardController.rotateRight(current);
+        }
+
+        return -1;
+    }
+
 
 }

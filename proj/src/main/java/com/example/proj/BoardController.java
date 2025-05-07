@@ -247,19 +247,13 @@ public class BoardController implements Observer {
 
             if (timeRemaining <= 0) {
                 timer.stop();
-                handleGameOverDueToTimeout();
+                gridBoard.setDisable(true);
+                System.out.println("Game Over: Time's up!");
             }
         }));
 
         timer.setCycleCount(Timeline.INDEFINITE);
         timer.play();
-    }
-
-    private void handleGameOverDueToTimeout() {
-        gridBoard.setDisable(true);
-        System.out.println("Game Over: Time's up!");
-
-
     }
     // TIME
 
