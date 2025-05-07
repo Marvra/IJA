@@ -300,24 +300,66 @@ public class GameDifficulty {
 					game.node(position).setSides(newSides);
 					break;
 				}
-
 			}
 			originals.remove(0);
 		}
 		reduceEmpty(game);
+		// reduceUnleaded(game);
 		game.print();
 		return game;
 	}
 
 	public void reduceEmpty(Game game) {
+		boolean changed;
+		do {
+			changed = false;
+			for (int i = 1; i <= game.rows(); i++) {
+				for (int j = 1; j <= game.cols(); j++) {
+					Position p = new Position(i, j);
+					if (game.node(p).type == Type.LINK) {
+						for (GameNode n : game.empties(p)) {
+							Vector v = new Vector(Point.fromPosition(p), Point.fromPosition(n.getPosition()));
+							double roun = v.angle();
+							game.node(p).sides.remove((Side.values()[(int) ((-roun / Math.PI) * 2 + 5) % 4]));
+							// invalid route when not routing anywhere, rewrite to Empty
+							if (game.node(p).sides.size() == 1) {
+								changed = true;
+								game.node(p).type = Type.EMPTY;
+								game.node(p).sides.clear();
+							}
+						}
+					}
+				}
+			}
+		} while (changed);
+	}
+
+	/**
+	 * Removes unconnected sides from link nodes. This is done by going through all
+	 * link nodes and for each of them going through all its neighbors. If a
+	 * neighbor
+	 * is also a link node and the vector between the two nodes does not match any
+	 * of the neighbor's sides, the corresponding side is removed from the original
+	 * node.
+	 * 
+	 * @param game The game to reduce
+	 */
+	public void reduceUnleaded(Game game) {
 		for (int i = 1; i <= game.rows(); i++) {
 			for (int j = 1; j <= game.cols(); j++) {
 				Position p = new Position(i, j);
 				if (game.node(p).type == Type.LINK) {
-					for (GameNode n : game.empties(p)) {
-						Vector v = new Vector(Point.fromPosition(p), Point.fromPosition(n.getPosition()));
-						double roun = v.angle();
-						game.node(p).sides.remove((Side.values()[(int) ((-roun / Math.PI) * 2 + 5) % 4]));
+					for (GameNode n : game.neighours(p)) {
+						if (n.type == Type.LINK) {
+							Vector v = new Vector(Point.fromPosition(p), Point.fromPosition(n.getPosition()));
+							double roun = v.angle();
+							if (game.node(p).sides.contains(Side.values()[(int) ((-roun / Math.PI) * 2 + 5) % 4])
+									&& !n.sides.contains(Side.values()[(int) ((-roun / Math.PI) * 2 + 7) % 4])) {
+								System.out.println("ON "+ game.node(p) + " removing " + Side.values()[(int) ((-roun / Math.PI) * 2 + 5) % 4]);
+								game.node(p).sides.remove((Side.values()[(int) ((-roun / Math.PI) * 2 + 5) % 4]));
+								reduceEmpty(game);
+							}
+						}
 					}
 				}
 			}
