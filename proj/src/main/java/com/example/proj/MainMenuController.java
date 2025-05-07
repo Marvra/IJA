@@ -71,7 +71,7 @@ public class MainMenuController {
         BoardController boardController = changeScreen(event, "board.fxml").getController();
         GameGenerator generator = new GameGenerator(dimensions, dimensions, difficulty);
         Game game = generator.generate();
-        boardController.setTimedMode(true, 5); // urob selectable button
+        boardController.setTimedMode(true, 50); // urob selectable button
         boardController.createBoard(game);
     }
 
