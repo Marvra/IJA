@@ -312,6 +312,7 @@ public class GameDifficulty {
 				originals.remove(0);
 			}
 			reduceEmpty(game);
+			reduceGrid(game);
 			// reduceUnleaded(game);
 			game.print();
 		} while (accessibleBulbCount(game, null, null) != lightbulbCount);
@@ -369,6 +370,32 @@ public class GameDifficulty {
 								game.node(p).sides.remove((Side.values()[(int) ((-roun / Math.PI) * 2 + 5) % 4]));
 								reduceEmpty(game);
 							}
+						}
+					}
+				}
+			}
+		}
+	}
+
+	protected void reduceGrid(Game game) {
+		for (int i = 1; i <= game.rows(); i++) {
+			for (int j = 1; j <= game.cols(); j++) {
+				Position p = new Position(i, j);
+				if (game.node(p).type == Type.LINK) {
+					Random r = new Random();
+					if (game.node(p).sides.size() == 4) {
+						for (int k = 0; k < r.nextInt() % (game.node(p).sides.size() - 1) + 1; k++) {
+							int before = accessibleBulbCount(game, null, null);
+							List<Side> sideList = new ArrayList<>(game.node(p).sides);
+							Side s = sideList.get(r.nextInt(sideList.size()));
+							game.node(p).sides.remove(s);
+							if (before != accessibleBulbCount(game, null, null)) {
+								game.node(p).sides.add(s);
+								k--;
+								continue;
+							}
+							reduceEmpty(game);
+							// reduceUnleaded(game);
 						}
 					}
 				}
