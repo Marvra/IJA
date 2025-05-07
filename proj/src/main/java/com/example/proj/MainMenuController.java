@@ -59,6 +59,7 @@ public class MainMenuController {
 
     public void easyDifficulty(ActionEvent event){chooseDifficulty(event, GeneralDifficulty.easy, 6);}
     public void mediumDifficulty(ActionEvent event){chooseDifficulty(event, GeneralDifficulty.medium, 8);}
+    public void hardDifficulty(ActionEvent event){chooseDifficulty(event, GeneralDifficulty.hard, 12);}
 
     public void logGameScreen(ActionEvent event){
         changeScreen(event, "log_game_selection.fxml");

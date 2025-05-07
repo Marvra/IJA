@@ -10,8 +10,10 @@ import java.util.Random;
 import ija.ija2024.homework2.common.GameNode;
 import ija.ija2024.homework2.common.Position;
 import ija.ija2024.homework2.common.Side;
+import ija.ija2024.homework2.common.Type;
 import ija.ija2024.homework2.common.geometry.Point;
 import ija.ija2024.homework2.common.geometry.Segment;
+import ija.ija2024.homework2.common.geometry.Vector;
 import ija.ija2024.homework2.game.Game;
 
 public class GameDifficulty {
@@ -105,7 +107,7 @@ public class GameDifficulty {
 		}
 		Random random = new Random();
 		List<Position> positions = new ArrayList<>();
-
+		int distance = this.dimensions / 2;
 		int lightbulbs = random.nextInt(maximum - minimum + 1) + minimum;
 		int tries = 120;
 		for (int i = 0; i <= lightbulbs; i++) {
@@ -120,8 +122,11 @@ public class GameDifficulty {
 				exists = positions.contains(pos);
 				if (positions.size() > 0) {
 					Position power = positions.get(0);
-					if (Math.hypot(pos.getRow() - power.getRow(), pos.getCol() - power.getCol()) < 2) {
+					if (Math.hypot(pos.getRow() - power.getRow(), pos.getCol() - power.getCol()) < distance) {
 						exists = true;
+						if(distance > 2) {
+							distance--;
+						}
 					}
 				}
 				if (tries >= 0)
@@ -179,4 +184,116 @@ public class GameDifficulty {
 		return mst;
 	}
 
+    public Game generate(int minimumBulbs, int maximumBulbs) {
+        Game game = Game.create(this.dimensions, this.dimensions);
+        List<Position> positions = this.generatePositions(minimumBulbs, maximumBulbs);
+        List<Position> originals = new ArrayList<>(positions);
+        List<Segment> segments = new ArrayList<>();
+        for (Position o : originals) {
+            System.out.println(Point.fromPosition(o));
+        }
+        // make segments between nodes
+        for (int i = 0; i < positions.size(); i++) {
+            for (int j = i + 1; j < positions.size(); j++) {
+                Point p1 = Point.fromPosition(positions.get(i));
+                Point p2 = Point.fromPosition(positions.get(j));
+                segments.add(new Segment(p1, p2));
+            }
+        }
+
+        // add intersections of segments
+        for (int i = 0; i < segments.size(); i++) {
+            for (int j = i + 1; j < segments.size(); j++) {
+                Point p1 = Segment.intersection(segments.get(i), segments.get(j));
+                if (p1 != null) {
+                    if (!positions.contains(p1.toPosition())) {
+                        positions.add(p1.toPosition());
+                    }
+                }
+            }
+        }
+        segments.clear();
+        List<Point> points = new ArrayList<>();
+        for (Position p : positions) {
+            points.add(Point.fromPosition(p));
+        }
+        segments = mst(points);
+        List<Position> newPositions = new ArrayList<>();
+        for (Segment s : segments) {
+            newPositions = merge(newPositions, s.rasterize());
+        }
+        List<GameNode> nodes = GameDifficulty.convertToLinks(newPositions, game);
+        game.print();
+        Position position = originals.get(0);
+        if (game.node(position).type == Type.EMPTY) {
+            // if node is empty, add bulb there with link
+            for (GameNode n : game.neighours(position)) {
+                if (n.type == Type.LINK) {
+                    Vector v = new Vector(Point.fromPosition(position), Point.fromPosition(n.getPosition()));
+                    double roun = v.angle();
+                    System.out.println(v);
+                    System.out.println(-roun / Math.PI + " PI");
+                    game.createPowerNode(position, Side.values()[(int) ((-roun / Math.PI) * 2 + 5) % 4]);
+                    Side[] newSides = n.sides.toArray(new Side[n.sides.size() + 1]);
+                    newSides[n.sides.size()] = Side.values()[(int) ((-roun / Math.PI) * 2 + 7) % 4];
+                    n.setSides(newSides);
+                    break;
+                }
+            }
+        } else {
+            List<GameNode> empties = new ArrayList<>(game.empties(position));
+            Collections.shuffle(empties, new Random());
+            for (GameNode n : empties) {
+                Vector v = new Vector(Point.fromPosition(position), Point.fromPosition(n.getPosition()));
+                System.out.println(v);
+                double roun = v.angle();
+                System.out.println(-roun / Math.PI + " PI");
+                game.createPowerNode(n.getPosition(), Side.values()[(int) ((-roun / Math.PI) * 2 + 7) % 4]);
+                Side[] newSides = game.node(position).sides.toArray(new Side[game.node(position).sides.size() + 1]);
+                newSides[game.node(position).sides.size()] = Side.values()[(int) ((-roun / Math.PI) * 2 + 5) % 4];
+                game.node(position).setSides(newSides);
+                break;
+            }
+
+        }
+        originals.remove(0);
+
+        while (!originals.isEmpty()) {
+            position = originals.get(0);
+            if (game.node(position).type == Type.EMPTY) {
+                // if node is empty, add bulb there with link
+                for (GameNode n : game.neighours(position)) {
+                    if (n.type == Type.LINK) {
+                        Vector v = new Vector(Point.fromPosition(position), Point.fromPosition(n.getPosition()));
+                        double roun = v.angle();
+                        System.out.println(v);
+                        System.out.println(-roun / Math.PI + " PI");
+                        game.createBulbNode(position, Side.values()[(int) ((-roun / Math.PI) * 2 + 5) % 4]);
+                        Side[] newSides = n.sides.toArray(new Side[n.sides.size() + 1]);
+                        newSides[n.sides.size()] = Side.values()[(int) ((-roun / Math.PI) * 2 + 7) % 4];
+                        n.setSides(newSides);
+                        break;
+                    }
+                }
+            } else {
+                List<GameNode> empties = new ArrayList<>(game.empties(position));
+                Collections.shuffle(empties, new Random());
+                for (GameNode n : empties) {
+                    Vector v = new Vector(Point.fromPosition(position), Point.fromPosition(n.getPosition()));
+                    double roun = v.angle();
+                    System.out.println(v);
+                    System.out.println(-roun / Math.PI + " PI");
+                    game.createBulbNode(n.getPosition(), Side.values()[(int) ((-roun / Math.PI) * 2 + 7) % 4]);
+                    Side[] newSides = game.node(position).sides.toArray(new Side[game.node(position).sides.size() + 1]);
+                    newSides[game.node(position).sides.size()] = Side.values()[(int) ((-roun / Math.PI) * 2 + 5) % 4];
+                    game.node(position).setSides(newSides);
+                    break;
+                }
+
+            }
+            originals.remove(0);
+        }
+        game.print();
+        return game;
+    }
 }

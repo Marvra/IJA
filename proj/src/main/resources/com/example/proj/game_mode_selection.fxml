@@ -7,7 +7,7 @@
    <children>
       <Button fx:id="difficultyBtn" layoutX="268.0" layoutY="231.0" mnemonicParsing="false" onAction="#easyDifficulty" text="Easy" />
       <Button fx:id="logGameButton" layoutX="246.0" layoutY="475.0" mnemonicParsing="false" onAction="#logGameScreen" text="Load Game" />
-      <Button fx:id="difficultyBtn1" layoutX="268.0" layoutY="340.0" mnemonicParsing="false" onAction="#easyDifficulty" text="Hard" />
       <Button fx:id="difficultyBtn2" layoutX="258.0" layoutY="288.0" mnemonicParsing="false" onAction="#mediumDifficulty" text="Medium" />
+      <Button fx:id="difficultyBtn1" layoutX="268.0" layoutY="340.0" mnemonicParsing="false" onAction="#hardDifficulty" text="Hard" />
    </children>
 </AnchorPane>
