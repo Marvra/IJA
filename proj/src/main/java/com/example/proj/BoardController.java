@@ -2,11 +2,15 @@ package com.example.proj;
 
 import ija.ija2024.homework2.common.Position;
 import ija.ija2024.tool.common.Observable;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.geometry.Pos;
-import javafx.scene.Node;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.effect.ColorAdjust;
 import javafx.scene.effect.Glow;
 import javafx.scene.image.Image;
@@ -14,12 +18,13 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import ija.ija2024.homework2.game.Game;
 import ija.ija2024.homework2.common.GameNode;
-import ija.ija2024.homework2.common.Position;
 import ija.ija2024.homework2.common.Type;
 import ija.ija2024.homework2.common.Side;
-import ija.ija2024.tool.common.Observable;
 import ija.ija2024.tool.common.Observable.Observer;
+import javafx.stage.Stage;
 
+import java.io.IOException;
+import javafx.util.Duration;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -29,7 +34,6 @@ public class BoardController implements Observer {
 
     private int imageWidth = 50;
     private int imageHeight = 50;
-    private int MaxMoves = -1; // get maxmoves from game or somwwhere idk
 
     @FXML
     GridPane gridBoard;
@@ -41,16 +45,57 @@ public class BoardController implements Observer {
     Button playLogBtn;
     @FXML
     Button backToMenuBtn;
+    @FXML
+    Button helpBtn;
 
-    private Game createdGame;
+    // TIME (vlastny conroller treba)
+    private Timeline timer;
+    private int timeRemaining;
+    private boolean timedMode = false;
+    private int startTime = 0;
+    @FXML
+    private Label timerLabel;
+    // TIME
+
+    // HELP
+    private HelpWindowController helpWindowController;
+    private Game copyGame;
+    // HELP
+
+    //LOG
     private List<String> logData;
     private int logLine = 0;
+    //LOG
+
+    private Game createdGame;
 
     private ImageView[][] boardTitles;
 
     public void backToMenu(ActionEvent event) {
         MainMenuController.changeScreen(event, "game_mode_selection.fxml");
     }
+
+    @FXML
+    public void onHelpClicked(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("help_window.fxml"));
+            Parent root = loader.load();
+
+            helpWindowController = loader.getController();
+
+            helpWindowController.initHelpBoard(createdGame, copyGame, gridBoard, boardTitles);
+
+            Stage stage = new Stage();
+            stage.setTitle("Help");
+            stage.setScene(new Scene(root));
+            stage.show();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
 
     @Override
     public void update(Observable o) {
@@ -62,19 +107,23 @@ public class BoardController implements Observer {
         int col = pos.getCol() - 1;
 
         ImageView view = boardTitles[row][col];
-
-        // VARIANTA S INI PNG PRE LIT
-        // String baseImage = node.light() ? "" : "";
-        // Image newImage = new Image(getClass().getResourceAsStream(baseImage),
-        // imageWidth, imageHeight, false, false);
-        // view.setImage(newImage);
-
         if (node.light()) {
             Glow glow = new Glow(1.0);
             view.setEffect(glow);
         } else {
             view.setEffect(null);
         }
+
+        if(helpWindowController != null) {
+
+            helpWindowController.updateGame(node);
+        } else {
+            System.out.println("SEM NULL");
+
+        }
+
+
+
         System.out.println("WAS UPDATED");
 
     }
@@ -91,15 +140,16 @@ public class BoardController implements Observer {
 
         System.out.println("START BOARD CREATION");
 
-        for (int row = 0; row < game.rows(); row++) { // POZOR 4 LEBO BASIC GENERATE JE TERAZ NA 4X4 POLI
-            for (int col = 0; col < game.cols(); col++) { // POZOR 4 LEBO BASIC GENERATE JE TERAZ NA 4X4 POLI
+        for (int row = 0; row < game.rows(); row++) {
+            for (int col = 0; col < game.cols(); col++) {
 
                 // SKIP EMPTY
-
-                GameNode node = game.node(new Position(row + 1, col + 1));
+                Position position = new Position(row + 1, col + 1);
+                GameNode node = game.node(new Position(position.getRow(), position.getCol()));
 
                 if (node == null)
                     continue;
+
                 Image image = selectCorrectImageTitle(node);
 
                 ImageView title = new ImageView(image);
@@ -114,21 +164,43 @@ public class BoardController implements Observer {
                     continue; // SKIP EMPTY
                 node.addObserver(this);
 
+
                 title.setPickOnBounds(true);
-                // title.setOnMouseEntered(enterHoverEvent -> title.setEffect(darkenTitle));
-                // title.setOnMouseExited(exitHoverEvent -> title.setEffect(null));
                 title.setOnMouseClicked(mouseClickedEvent -> printClickedTitle(title, node));
-                // update(node);
                 System.out.println(node.toString()); // PRINT ONLY NOT EMPTY
             }
         }
-
-        createdGame = game;
-        // ImageView title = boardTitles[createdGame.powerCol][createdGame.powerRow];
-        //
-        // title.setRotate((title.getRotate() + 90) % 360);
         System.out.println("END BOARD CREATION");
+        createdGame = game;
+        if(game == null) {
+            System.out.println("HOVNO GENEROVANE ");
+            return;
+        }
+        copyGame = copyByValue(game);
+
+        if (timedMode) {
+            startTimer(startTime);
+        }
     }
+
+    public Game copyByValue(Game original) {
+        Game copy = Game.create(original.rows(), original.cols());
+
+        for (int row = 1; row <= original.rows(); row++) {
+            for (int col = 1; col <= original.cols(); col++) {
+                Position pos = new Position(row, col);
+                GameNode node = original.node(pos);
+                if (node == null) {
+                    continue;
+                }
+                copy.createNodeBase(pos, node.type, node.sides.toArray(new Side[0]));
+
+            }
+        }
+
+        return copy;
+    }
+
 
     // NOT IDEAL FIX LATER
     private boolean allBulbsAreLit() {
@@ -140,14 +212,50 @@ public class BoardController implements Observer {
                 }
             }
         }
+        if (timer != null) {
+            timer.stop();
+        }
         return true;
     }
+
+    // TIME
+
+    public void setTimedMode(boolean enabled, int seconds) {
+        this.timedMode = enabled;
+        this.startTime = seconds;
+    }
+
+    public void startTimer(int seconds) {
+        timeRemaining = seconds;
+        timerLabel.setText("Time: " + timeRemaining);
+
+        timer = new Timeline(new KeyFrame(Duration.seconds(1), event -> {
+            timeRemaining--;
+            timerLabel.setText("Time: " + timeRemaining);
+
+            if (timeRemaining <= 0) {
+                timer.stop();
+                handleGameOverDueToTimeout();
+            }
+        }));
+
+        timer.setCycleCount(Timeline.INDEFINITE);
+        timer.play();
+    }
+
+    private void handleGameOverDueToTimeout() {
+        gridBoard.setDisable(true);
+        System.out.println("Game Over: Time's up!");
+
+
+    }
+    // TIME
+
 
     private void endGame() {
         gridBoard.setDisable(true);
 
-        javafx.scene.control.Alert alert = new javafx.scene.control.Alert(
-                javafx.scene.control.Alert.AlertType.INFORMATION);
+        javafx.scene.control.Alert alert = new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.INFORMATION);
         alert.setTitle("Game Over");
         alert.setContentText("every bulb is lit");
         alert.showAndWait();
@@ -160,7 +268,7 @@ public class BoardController implements Observer {
         String base = type.toString(); // B L P
 
         if (type == Type.EMPTY) {
-            base = base + ".png"; // B.png
+            base = base + ".png"; // E.png
             return new Image(getClass().getResourceAsStream(base), imageHeight, imageWidth, false, false);
         }
 
@@ -168,7 +276,6 @@ public class BoardController implements Observer {
             base = base + ".png"; // B.png
             return new Image(getClass().getResourceAsStream(base), imageHeight, imageWidth, false, false);
         }
-        // System.out.println(base);
 
         int count = sides.size();
 
@@ -184,8 +291,20 @@ public class BoardController implements Observer {
         return new Image(getClass().getResourceAsStream(base), imageHeight, imageWidth, false, false);
     }
 
-    private int numberOfRotations(int numberOfSides, GameNode node) {
+
+    // TO GAME PROBABLY
+    static public int countRotationsToMatch(List<Side> current, List<Side> target) {
         int count = 0;
+        while (!sameSides(current, target)) {
+            count++;
+            rotateRight(target);
+            if (count > 3)
+                break;
+        }
+        return  count;
+    }
+
+    private int numberOfRotations(int numberOfSides, GameNode node) {
         List<Side> sidesPic;
 
         if (numberOfSides == 1) { // B, P_1
@@ -205,25 +324,16 @@ public class BoardController implements Observer {
         }
 
         List<Side> origSides = new ArrayList<>(node.sides);
-        // Arrays.sort(origSides);
-        // Arrays.sort(sidesPic);
-
-        while (!sameSides(origSides, sidesPic)) {
-            count++;
-            rotateRight(sidesPic);
-            if (count > 3)
-                break;
-        }
-        return count;
-    }
-    
-    private boolean sameSides(List<Side> a, List<Side> b) {
-        List<Side> listA = new ArrayList<>(a);
-        List<Side> listB = new ArrayList<>(b);
-        return listA.containsAll(listB) && listB.containsAll(listA);
+        return countRotationsToMatch(origSides, sidesPic);
     }
 
-    private void rotateRight(List<Side> sides) {
+    // TO GAME PROBABLY
+    static public boolean sameSides(List<Side> a, List<Side> b) {
+        return new HashSet<>(a).equals(new HashSet<>(b));
+    }
+
+    // TO GAME PROBABLY
+    static public void rotateRight(List<Side> sides) {
         for (int i = 0; i < sides.size(); i++) {
             sides.set(i, switch (sides.get(i)) {
                 case NORTH -> Side.EAST;
@@ -236,15 +346,14 @@ public class BoardController implements Observer {
 
     private void printClickedTitle(ImageView title, GameNode node) {
 
-        Integer hoveredRow = GridPane.getRowIndex(title);
-        Integer hoveredCol = GridPane.getColumnIndex(title);
-
-        int rowIdx = hoveredRow != null ? hoveredRow : 0;
-        int colIdx = hoveredCol != null ? hoveredCol : 0;
         node.turn();
         System.out.println(node.toString());
 
         title.setRotate((title.getRotate() + 90) % 360);
+
+        if(helpWindowController != null) {
+            helpWindowController.updateGame(node);
+        }
 
         if (allBulbsAreLit()) {
             endGame();

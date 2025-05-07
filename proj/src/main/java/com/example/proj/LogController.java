@@ -46,10 +46,21 @@ public class LogController {
         Game game = Game.create(4,4);
     }
 
+    /**
+     * Used to go back to the main menu when the back button is clicked.
+     * 
+     * @param event event that triggered the method
+     */
+    @FXML
     public void backToMenu(ActionEvent event) {
         MainMenuController.changeScreen(event, "game_mode_selection.fxml");
     }
 
+    /**
+     * 
+     * 
+     * @param event event that triggered the method
+     */
     public void startSelectedGame(ActionEvent event) {
         Game game = handleLogSelected();
 
@@ -121,7 +132,15 @@ public class LogController {
     }
 
 
-
+    /**
+     * Converts a string of a game node to a Position object and creates the corresponding node in the game.
+     * Uses regex to parse the string for needed information about give string of node.
+     * string format is "{L[2@3][SOUTH,NORTH]}".
+     *
+     * @param line string representation of the game node.
+     * @param game Game object where the node will be created.
+     * @return Position object representing the coordinates of the node.
+     */
     static public Position stringToGameNode(String line, Game game, boolean uglyStop) {
         // {L[2@3][SOUTH,NORTH]}
         Pattern pattern = Pattern.compile("\\{([LPEB])\\[(\\d+)@(\\d+)\\]\\[([A-Z,]*)\\]\\}");
@@ -145,12 +164,10 @@ public class LogController {
                 String[] sideStrings = sidesStr.split(",");
                 Side[] sides = new Side[sideStrings.length];
 
-                // Convert string sides to Side enum values
                 for (int i = 0; i < sideStrings.length; i++) {
                     sides[i] = stringToSide(sideStrings[i]);
                 }
 
-                // Create nodes based on type
                 switch (typeStr) {
                     case "L":
                         game.createLinkNode(position, sides);
@@ -176,6 +193,7 @@ public class LogController {
         }
     }
 
+    // DO SIDE
     static public Side stringToSide(String sideStr) {
         switch (sideStr) {
             case "NORTH": return Side.NORTH;
