@@ -4,15 +4,11 @@ import ija.ija2024.homework2.game.DifficultyLevels.EasyDifficulty;
 import ija.ija2024.homework2.game.DifficultyLevels.GeneralDifficulty;
 import ija.ija2024.homework2.game.GameGenerator;
 import javafx.event.ActionEvent;
-import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 import javafx.stage.Stage;
-import ija.ija2024.homework2.game.DifficultyLevels.GameDifficulty;
 import ija.ija2024.homework2.game.Game;
 
 import java.io.IOException;

@@ -28,12 +28,14 @@ public class LogController {
     @FXML
     private Button backToMenuBtn;
 
+    private Game logGame;
+
     private String logFileName;
     private List<String> log;
 
     public void initialize() {
+        logFiles.getItems().clear();
         Path dirPath = Paths.get("src/main/resources/log");
-
         try (Stream<Path> paths = Files.list(dirPath)) {
             paths.filter(path -> path.toString().endsWith(".txt"))
                     .map(Path::getFileName)
@@ -42,8 +44,6 @@ public class LogController {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-        Game game = Game.create(4,4);
     }
 
     /**
@@ -81,55 +81,58 @@ public class LogController {
             return null;
         }
 
-        URL resource = getClass().getResource("/log/" + selectedFile);
-        if (resource == null) {
-            System.out.println("File not found in resources: " + selectedFile);
+        Path filePath = Paths.get("src/main/resources/log", selectedFile);
+
+        if (!Files.exists(filePath)) {
+            System.out.println("File not found: " + filePath.toAbsolutePath());
             return null;
         }
 
-        Path filePath;
+        List<String> allLines;
         try {
-            filePath = Paths.get(resource.toURI());
-        } catch (Exception e) {
+            allLines = Files.readAllLines(filePath);
+        } catch (IOException e) {
             e.printStackTrace();
             return null;
         }
-        Game game = Game.create(4, 4); // or dynamic
+
+        if (allLines.isEmpty()) {
+            throw new RuntimeException("Log file is empty.");
+        }
+
+        int[] dimensions = getBoardDimensionsFromLog(allLines.get(0).trim());
+        logGame = Game.create(dimensions[0], dimensions[1]);
 
         boolean inBoardSection = false;
         boolean boardSectionEnded = false;
         log = new ArrayList<>();
 
-        try (Stream<String> lines = Files.lines(filePath)) {
-            for (String line : lines.collect(Collectors.toList())) {
-                line = line.trim();
+        for (String line : allLines) {
+            line = line.trim();
+            if (line.isEmpty()) continue;
 
-                if (line.isEmpty()) continue;
-
-                if (line.contains("START BOARD CREATION")) {
-                    inBoardSection = true;
-                    continue;
-                }
-
-                if (line.contains("END BOARD CREATION")) {
-                    inBoardSection = false;
-                    boardSectionEnded = true;
-                    continue;
-                }
-
-                if (inBoardSection) {
-                    stringToGameNode(line, game, false);
-                } else if (boardSectionEnded) {
-                    log.add(line);
-                }
+            if (line.contains("START BOARD CREATION")) {
+                inBoardSection = true;
+                continue;
             }
-        } catch (IOException e) {
-            e.printStackTrace();
+
+            if (line.contains("END BOARD CREATION")) {
+                inBoardSection = false;
+                boardSectionEnded = true;
+                continue;
+            }
+
+            if (inBoardSection) {
+                stringToGameNode(line, logGame, false);
+            } else if (boardSectionEnded) {
+                log.add(line);
+            }
         }
 
         System.out.println("Game successfully created. Log size: " + log.size());
-        return game;
+        return logGame;
     }
+
 
 
     /**
@@ -143,7 +146,7 @@ public class LogController {
      */
     static public Position stringToGameNode(String line, Game game, boolean uglyStop) {
         // {L[2@3][SOUTH,NORTH]}
-        Pattern pattern = Pattern.compile("\\{([LPEB])\\[(\\d+)@(\\d+)\\]\\[([A-Z,]*)\\]\\}");
+        Pattern pattern = Pattern.compile("\\{([LPEB])\\[(\\d+)@(\\d+)\\]\\[([A-Z, ]*)\\]\\}");
         Matcher matcher = pattern.matcher(line);
 
         if (matcher.matches()) {
@@ -193,9 +196,32 @@ public class LogController {
         }
     }
 
+    /**
+     * This method extracts the board dimensions from a log line.
+     * It assumes the log line has the format: "BOARD DIMENSIONS : [rows@cols]"
+     *
+     * @param logLine the log line containing the board dimensions
+     * @return an array with the board dimensions [rows, cols]
+     */
+    public static int[] getBoardDimensionsFromLog(String logLine) {
+        // board dimensions
+        Pattern pattern = Pattern.compile("BOARD DIMENSIONS : \\[(\\d+)@(\\d+)\\]");
+        Matcher matcher = pattern.matcher(logLine);
+
+        if (matcher.find()) {
+            int rows = Integer.parseInt(matcher.group(1));
+            int cols = Integer.parseInt(matcher.group(2));
+            return new int[]{rows, cols};
+        } else {
+            throw new IllegalArgumentException("Invalid log format for board dimensions: " + logLine);
+        }
+    }
+
+
+
     // DO SIDE
     static public Side stringToSide(String sideStr) {
-        switch (sideStr) {
+        switch (sideStr.trim()) {
             case "NORTH": return Side.NORTH;
             case "SOUTH": return Side.SOUTH;
             case "EAST": return Side.EAST;

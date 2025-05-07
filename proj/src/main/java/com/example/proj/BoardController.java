@@ -23,6 +23,9 @@ import ija.ija2024.homework2.common.Side;
 import ija.ija2024.tool.common.Observable.Observer;
 import javafx.stage.Stage;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import javafx.util.Duration;
 import java.util.ArrayList;
@@ -47,6 +50,8 @@ public class BoardController implements Observer {
     Button backToMenuBtn;
     @FXML
     Button helpBtn;
+    @FXML
+    Button saveBtn;
 
     // TIME (vlastny conroller treba)
     private Timeline timer;
@@ -66,6 +71,7 @@ public class BoardController implements Observer {
     //LOG
     private List<String> logData;
     private int logLine = 0;
+    private StringBuilder logOutput;
     //LOG
 
     private Game createdGame;
@@ -83,7 +89,6 @@ public class BoardController implements Observer {
             helpWindowStage.close();
             helpWindowStage = null;
         }
-
         MainMenuController.changeScreen(event, "game_mode_selection.fxml");
     }
 
@@ -150,7 +155,9 @@ public class BoardController implements Observer {
         ColorAdjust litTitle = new ColorAdjust();
         litTitle.setBrightness(1.0);
 
-        System.out.println("START BOARD CREATION");
+        logOutput = new StringBuilder();
+        logOutput.append("BOARD DIMENSIONS : " + "[" + game.rows() + "@" + game.cols() + "]").append("\n");
+        logOutput.append("START BOARD CREATION").append("\n");
 
         for (int row = 0; row < game.rows(); row++) {
             for (int col = 0; col < game.cols(); col++) {
@@ -180,10 +187,11 @@ public class BoardController implements Observer {
                 title.setPickOnBounds(true);
                 title.setOnMouseClicked(mouseClickedEvent -> printClickedTitle(title, node));
                 System.out.println(node.toString()); // PRINT ONLY NOT EMPTY
+                logOutput.append(node).append("\n"); // instead of sys.out etc node.toString()
             }
         }
-        System.out.println("END BOARD CREATION");
-        createdGame = game;
+        logOutput.append("END BOARD CREATION").append("\n");
+        this.createdGame = game;
         if(game == null) {
             System.out.println("HOVNO GENEROVANE ");
             return;
@@ -361,13 +369,43 @@ public class BoardController implements Observer {
             helpWindowController.updateGame(node);
         }
 
+        logOutput.append(node.toString()).append("\n");
+
         if (allBulbsAreLit()) {
             endGame();
         }
     }
 
+    @FXML
+    public void saveCUrrentGame() {
+        saveToLogFile();
+    }
+
+    int iaj = 0 ;
+    // POZOR TU SI TO PREPISUJES TEDA SI PREPISUJES VZDY LOGS
+    // MOZNO NIE TU ZROVNA ALE PROSTE ABY SI SI ULOZIL #. LOG MUSIS KLIKNU 3.KRAT SAVE
+    // A TIE PREDTYM SA TI PREPISU ABY SA VYTOVRIL DALSI LOG
+    private void saveToLogFile() {
+        iaj ++;
+        String logname = "game_log" + iaj + ".txt";
+        try {
+            File logFile = new File("src/main/resources/log", logname );
+            FileWriter fileWriter = new FileWriter(logFile, false);
+            BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
+
+            bufferedWriter.write(String.valueOf(logOutput));
+            bufferedWriter.close();
+            System.out.println("SAVED TO FILE");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
     public void logMode(List<String> log) {
-        logData = log;
+        this.logData = log;
+        this.logLine = 0;
+
         ColorAdjust darkenBoard = new ColorAdjust();
         darkenBoard.setBrightness(-0.5);
         gridBoard.setEffect(darkenBoard);
