@@ -248,7 +248,7 @@ public class Game implements ToolEnvironment, Observer {
         List<GameNode> neighbours = new ArrayList<>();
         for(int i = 1; i <= 4; i++) {
             int row = p.getRow() + (int) Math.sin(i * Math.PI / 2);
-            int col = p.getRow() + (int) Math.cos(i * Math.PI / 2);
+            int col = p.getCol() + (int) Math.cos(i * Math.PI / 2);
             if(checkParams(row, col) && this.nodes[row][col].type != Type.EMPTY) {
                 neighbours.add(this.nodes[row][col]);
             }
