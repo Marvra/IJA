@@ -43,7 +43,7 @@ public class Vector implements Cloneable {
 	}
 
 	public double angle() {
-		return Math.atan2(this.y, this.x);
+		return ((this.y < 0) ? 2 * Math.PI : 0) + Math.atan2(this.y, this.x);
 	}
 
 	@Override
