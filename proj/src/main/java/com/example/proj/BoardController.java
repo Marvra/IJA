@@ -381,13 +381,26 @@ public class BoardController implements Observer {
         saveToLogFile();
     }
 
-    int iaj = 0 ;
     // POZOR TU SI TO PREPISUJES TEDA SI PREPISUJES VZDY LOGS
     // MOZNO NIE TU ZROVNA ALE PROSTE ABY SI SI ULOZIL #. LOG MUSIS KLIKNU 3.KRAT SAVE
     // A TIE PREDTYM SA TI PREPISU ABY SA VYTOVRIL DALSI LOG
     private void saveToLogFile() {
-        iaj ++;
-        String logname = "game_log" + iaj + ".txt";
+        String timestamp = String.valueOf(System.currentTimeMillis());
+        String difficlty = "";
+
+        switch (createdGame.cols()){
+            case 6:
+                difficlty = "easy";
+                break;
+            case 8:
+                difficlty = "medium";
+                break;
+            case 12:
+                difficlty = "hard";
+                break;
+        }
+
+        String logname = "game_log_"+ difficlty + "_" + timestamp + ".txt";
         try {
             File logFile = new File("src/main/resources/log", logname );
             FileWriter fileWriter = new FileWriter(logFile, false);
