@@ -1,6 +1,5 @@
 package com.example.proj;
 
-import ija.ija2024.homework2.common.Position;
 import ija.ija2024.tool.common.Observable;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -16,10 +15,6 @@ import javafx.scene.effect.Glow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
-import ija.ija2024.homework2.game.Game;
-import ija.ija2024.homework2.common.GameNode;
-import ija.ija2024.homework2.common.Type;
-import ija.ija2024.homework2.common.Side;
 import ija.ija2024.tool.common.Observable.Observer;
 import javafx.stage.Stage;
 
@@ -30,6 +25,8 @@ import java.io.IOException;
 import javafx.util.Duration;
 
 import java.util.*;
+
+import com.example.proj.game.Game;
 
 public class BoardController implements Observer {
 
@@ -66,11 +63,11 @@ public class BoardController implements Observer {
     private Game copyGame;
     // HELP
 
-    //LOG
+    // LOG
     private List<String> logData;
     private int logLine = 0;
     private StringBuilder logOutput;
-    //LOG
+    // LOG
 
     private Game createdGame;
 
@@ -110,8 +107,6 @@ public class BoardController implements Observer {
         }
     }
 
-
-
     @Override
     public void update(Observable o) {
         if (!(o instanceof GameNode))
@@ -129,7 +124,7 @@ public class BoardController implements Observer {
             view.setEffect(null);
         }
 
-        if(helpWindowController != null) {
+        if (helpWindowController != null) {
 
             helpWindowController.updateGame(node);
 
@@ -137,8 +132,6 @@ public class BoardController implements Observer {
             System.out.println("SEM NULL");
 
         }
-
-
 
         System.out.println("WAS UPDATED");
 
@@ -183,7 +176,6 @@ public class BoardController implements Observer {
                     continue; // SKIP EMPTY
                 node.addObserver(this);
 
-
                 title.setPickOnBounds(true);
                 title.setOnMouseClicked(mouseClickedEvent -> printClickedTitle(title, node));
                 System.out.println(node.toString()); // PRINT ONLY NOT EMPTY
@@ -194,9 +186,9 @@ public class BoardController implements Observer {
         logOutput.append("END BOARD CREATION").append("\n");
         this.createdGame = game;
         createdGame.init();
-        update(createdGame.node( new Position(createdGame.powerRow, createdGame.powerCol)));
-        createdGame.update(createdGame.node( new Position(createdGame.powerRow, createdGame.powerCol)));
-        if(game == null) {
+        update(createdGame.node(new Position(createdGame.powerRow, createdGame.powerCol)));
+        createdGame.update(createdGame.node(new Position(createdGame.powerRow, createdGame.powerCol)));
+        if (game == null) {
             System.out.println("HOVNO GENEROVANE ");
             return;
         }
@@ -218,14 +210,17 @@ public class BoardController implements Observer {
                     continue;
                 }
 
-                int rotations = rand.nextInt(4); // 0 to 3
-                for (int i = 0; i < rotations; i++) {
-                    node.turn();
-                }
+                int distribution = rand.nextInt(10); // 0 to 9
+                if (distribution < 8) { // 90 % chance of rotation
+                    distribution = rand.nextInt(10);
+                    int rotations = rand.nextInt(4) % (distribution < 3 ? 2 : 4); // 0 to 3
+                    for (int i = 0; i < rotations; i++) {
+                        node.turn();
+                    }
+                }   
             }
         }
     }
-
 
     public Game copyByValue(Game original) {
         Game copy = Game.create(original.rows(), original.cols());
@@ -244,7 +239,6 @@ public class BoardController implements Observer {
 
         return copy;
     }
-
 
     // NOT IDEAL FIX LATER
     private boolean allBulbsAreLit() {
@@ -289,11 +283,11 @@ public class BoardController implements Observer {
     }
     // TIME
 
-
     private void endGame() {
         gridBoard.setDisable(true);
 
-        javafx.scene.control.Alert alert = new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.INFORMATION);
+        javafx.scene.control.Alert alert = new javafx.scene.control.Alert(
+                javafx.scene.control.Alert.AlertType.INFORMATION);
         alert.setTitle("Game Over");
         alert.setContentText("every bulb is lit");
         alert.showAndWait();
@@ -329,7 +323,6 @@ public class BoardController implements Observer {
         return new Image(getClass().getResourceAsStream(base), imageHeight, imageWidth, false, false);
     }
 
-
     // TO GAME PROBABLY
     static public int countRotationsToMatch(List<Side> current, List<Side> target) {
         int count = 0;
@@ -339,7 +332,7 @@ public class BoardController implements Observer {
             if (count > 3)
                 break;
         }
-        return  count;
+        return count;
     }
 
     private int numberOfRotations(int numberOfSides, GameNode node) {
@@ -389,7 +382,7 @@ public class BoardController implements Observer {
 
         title.setRotate((title.getRotate() + 90) % 360);
 
-        if(helpWindowController != null) {
+        if (helpWindowController != null) {
             helpWindowController.updateGame(node);
         }
 
@@ -408,13 +401,14 @@ public class BoardController implements Observer {
     }
 
     // POZOR TU SI TO PREPISUJES TEDA SI PREPISUJES VZDY LOGS
-    // MOZNO NIE TU ZROVNA ALE PROSTE ABY SI SI ULOZIL #. LOG MUSIS KLIKNU 3.KRAT SAVE
+    // MOZNO NIE TU ZROVNA ALE PROSTE ABY SI SI ULOZIL #. LOG MUSIS KLIKNU 3.KRAT
+    // SAVE
     // A TIE PREDTYM SA TI PREPISU ABY SA VYTOVRIL DALSI LOG
     private void saveToLogFile() {
         String timestamp = String.valueOf(System.currentTimeMillis());
         String difficlty = "";
 
-        switch (createdGame.cols()){
+        switch (createdGame.cols()) {
             case 6:
                 difficlty = "easy";
                 break;
@@ -426,9 +420,9 @@ public class BoardController implements Observer {
                 break;
         }
 
-        String logname = "game_log_"+ difficlty + "_" + timestamp + ".txt";
+        String logname = "game_log_" + difficlty + "_" + timestamp + ".txt";
         try {
-            File logFile = new File("src/main/resources/log", logname );
+            File logFile = new File("src/main/resources/log", logname);
             FileWriter fileWriter = new FileWriter(logFile, false);
             BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
 
@@ -439,7 +433,6 @@ public class BoardController implements Observer {
             e.printStackTrace();
         }
     }
-
 
     public void logMode(List<String> log) {
         this.logData = log;

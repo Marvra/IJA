@@ -1,17 +1,18 @@
 package com.example.proj;
 
-import ija.ija2024.homework2.game.DifficultyLevels.EasyDifficulty;
-import ija.ija2024.homework2.game.DifficultyLevels.GeneralDifficulty;
-import ija.ija2024.homework2.game.GameGenerator;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import ija.ija2024.homework2.game.Game;
 
 import java.io.IOException;
+
+import com.example.proj.DifficultyLevels.EasyDifficulty;
+import com.example.proj.DifficultyLevels.GeneralDifficulty;
+import com.example.proj.game.Game;
+import com.example.proj.game.GameGenerator;
 
 public class MainMenuController {
 
@@ -23,7 +24,6 @@ public class MainMenuController {
      * @param event event that triggered the method
      * @return FXMLLoader object
      */
-
     public static FXMLLoader changeScreen(ActionEvent event, String fxmlName) {
         Scene scene;
         Stage stage;

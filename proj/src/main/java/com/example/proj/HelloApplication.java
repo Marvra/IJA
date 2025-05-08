@@ -4,9 +4,10 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import ija.ija2024.homework2.game.Game;
 
 import java.io.IOException;
+
+import com.example.proj.game.Game;
 // Observable, Observe pattern
 // Napojeni obrazku na spravne wires
 public class HelloApplication extends Application {

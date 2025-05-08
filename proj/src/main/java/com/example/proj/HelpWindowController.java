@@ -1,9 +1,5 @@
 package com.example.proj;
 
-import ija.ija2024.homework2.common.GameNode;
-import ija.ija2024.homework2.common.Position;
-import ija.ija2024.homework2.common.Side;
-import ija.ija2024.homework2.game.Game;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -19,6 +15,8 @@ import javafx.scene.text.FontWeight;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+
+import com.example.proj.game.Game;
 
 public class HelpWindowController {
 

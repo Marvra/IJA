@@ -16,11 +16,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import ija.ija2024.homework2.common.GameNode;
-import ija.ija2024.homework2.common.Position;
-import ija.ija2024.homework2.common.Side;
-import ija.ija2024.homework2.common.Type;
-import ija.ija2024.homework2.game.Game;
+
+import com.example.proj.game.Game;
 
 public class LogController {
     @FXML
