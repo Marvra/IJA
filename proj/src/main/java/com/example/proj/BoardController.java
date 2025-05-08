@@ -26,6 +26,7 @@ import javafx.util.Duration;
 
 import java.util.*;
 
+import com.example.proj.Position;
 import com.example.proj.game.Game;
 
 public class BoardController implements Observer {

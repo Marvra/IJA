@@ -18,6 +18,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import com.example.proj.game.Game;
+import com.example.proj.Position;
 
 public class LogController {
     @FXML
