@@ -1,6 +1,8 @@
 package ija.ija2024.homework2.game.DifficultyLevels;
 
+
 import java.util.random.*;
+
 
 import ija.ija2024.homework2.common.GameNode;
 import ija.ija2024.homework2.common.Position;
@@ -143,5 +145,4 @@ public class MediumDifficulty extends GameDifficulty {
         game.print();
         return game;
     }
-
 }
