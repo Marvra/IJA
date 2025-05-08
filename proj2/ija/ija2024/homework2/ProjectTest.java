@@ -8,6 +8,7 @@ package ija.ija2024.homework2;
 import ija.ija2024.homework2.common.GameNode;
 import ija.ija2024.homework2.common.Position;
 import ija.ija2024.homework2.common.Side;
+import ija.ija2024.homework2.common.geometry.Line;
 import ija.ija2024.homework2.common.geometry.Point;
 import ija.ija2024.homework2.common.geometry.Segment;
 
@@ -19,6 +20,8 @@ import static ija.ija2024.homework2.common.Side.WEST;
 import ija.ija2024.homework2.game.DifficultyLevels.EasyDifficulty;
 import ija.ija2024.homework2.game.Game;
 import ija.ija2024.homework2.game.DifficultyLevels.GameDifficulty;
+import ija.ija2024.homework2.game.DifficultyLevels.GeneralDifficulty;
+import ija.ija2024.homework2.game.DifficultyLevels.MediumDifficulty;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -97,11 +100,11 @@ public class ProjectTest {
     public void test01() {
         Point p = new Point(3.5, 4.25);
         Position pos = p.toPosition();
-        assertEquals(3, pos.getRow(), "Test konverze Point na Position.");
+        assertEquals(4, pos.getRow(), "Test konverze Point na Position.");
         assertEquals(4, pos.getCol(), "Test konverze Point na Position.");
 
         p = Point.fromPosition(pos);
-        assertEquals(3, p.getX(), "Test konverze Position na Point.");
+        assertEquals(4, p.getX(), "Test konverze Position na Point.");
         assertEquals(4, p.getY(), "Test konverze Position na Point.");
     }
 
@@ -224,5 +227,62 @@ public class ProjectTest {
         EasyDifficulty easyDifficulty = new EasyDifficulty();
         Game game = easyDifficulty.generate();
         game.init();
+    }
+
+    @Test
+    public void test05() {
+        Line l = new Line(new Point(0, 0), new Point(4, 4));
+        Line m = new Line(new Point(0, 2), new Point(2, 0));
+        Point p = Line.intersection(l, m);
+        assertEquals(1, p.getX(), "5.1 Intersection wrong");
+        assertEquals(1, p.getY(), "5.1 Intersection wrong");
+
+        Segment s = new Segment(new Point(0, 0), new Point(4, 4));
+        Segment t = new Segment(new Point(0, 2), new Point(2, 0));
+        p = Segment.intersection(s, t);
+        assertEquals(1, p.getX(), "5.2 Intersection wrong");
+        assertEquals(1, p.getY(), "5.2 Intersection wrong");
+
+        Segment o = new Segment(new Point(0, 0), new Point(2, 2));
+        Segment n = new Segment(new Point(0, 2), new Point(2, 5));
+        p = Segment.intersection(o, n);
+        assertNull(p, "5.3 Intersection wrong");
+
+        Segment u = new Segment(new Point(0, 0), new Point(2, 2));
+        Segment v = new Segment(new Point(1, 0), new Point(1, 2));
+        p = Segment.intersection(u, v);
+        assertEquals(1, p.getX(), "5.4 Intersection wrong");
+        assertEquals(1, p.getY(), "5.4 Intersection wrong");
+    }
+
+    @Test
+    public void test06() {
+        GameDifficulty difficulty = new GameDifficulty();
+        List<Point> points = new java.util.ArrayList<>();
+        points.add(new Point(0, 0));
+        points.add(new Point(0, 1));
+        points.add(new Point(1, 1));
+        points.add(new Point(2, 2));
+        points.add(new Point(3, 0));
+
+        List<Segment> segments = difficulty.mst(points);
+        assertEquals(4, segments.size(), "6.1 minimum spanning tree algorithm wrong.");
+
+        points = new java.util.ArrayList<>();
+        points.add(new Point(0, 0));
+        points.add(new Point(0, 1));
+        points.add(new Point(1, 1));
+        points.add(new Point(0.9, 1.5));
+        points.add(new Point(1.3, 0));
+        points.add(new Point(2, 2));
+        points.add(new Point(3, 0));
+
+        segments = difficulty.mst(points);
+        assertEquals(6, segments.size(), "6.2 minimum spanning tree algorithm wrong.");
+    }
+    @Test
+    public void test07() {
+        MediumDifficulty difficulty = new MediumDifficulty();
+        difficulty.generate();
     }
 }

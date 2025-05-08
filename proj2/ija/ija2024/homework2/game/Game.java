@@ -1,5 +1,8 @@
 package ija.ija2024.homework2.game;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import ija.ija2024.homework2.common.GameNode;
 import ija.ija2024.homework2.common.Position;
 import ija.ija2024.homework2.common.Side;
@@ -112,7 +115,7 @@ public class Game implements ToolEnvironment, Observer {
     public void traverseNodes(int row, int col, Side sideFromConnected, boolean notify)
     {
         GameNode currNode = this.nodes[row][col];
-        if(currNode.isEmpty() || currNode.light()) {
+        if(currNode == null || currNode.isEmpty() || currNode.light()) {
             return;
         }
 
@@ -236,5 +239,31 @@ public class Game implements ToolEnvironment, Observer {
             System.out.println();
         }
         System.out.println();
+    }
+
+    public List<GameNode> neighours(Position node) {
+        Position p = node;
+        List<GameNode> neighbours = new ArrayList<>();
+        for(int i = 1; i <= 4; i++) {
+            int row = p.getRow() + (int) Math.sin(i * Math.PI / 2);
+            int col = p.getRow() + (int) Math.cos(i * Math.PI / 2);
+            if(checkParams(row, col) && this.nodes[row][col].type != Type.EMPTY) {
+                neighbours.add(this.nodes[row][col]);
+            }
+        }
+        return neighbours;
+    }
+
+    public List<GameNode> empties(Position node) {
+        Position p = node;
+        List<GameNode> neighbours = new ArrayList<>();
+        for(int i = 1; i <= 4; i++) {
+            int row = p.getRow() + (int) Math.sin(i * Math.PI / 2);
+            int col = p.getCol() + (int) Math.cos(i * Math.PI / 2);
+            if(checkParams(row, col) && this.nodes[row][col].type == Type.EMPTY) {
+                neighbours.add(this.nodes[row][col]);
+            }
+        }
+        return neighbours;
     }
 }

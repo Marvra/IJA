@@ -4,6 +4,7 @@ import ija.ija2024.homework2.common.Position;
 import ija.ija2024.homework2.common.Side;
 import ija.ija2024.homework2.game.Game;
 import ija.ija2024.homework2.game.DifficultyLevels.GeneralDifficulty;
+import ija.ija2024.homework2.game.DifficultyLevels.MediumDifficulty;
 import ija.ija2024.homework2.game.DifficultyLevels.EasyDifficulty;
 import ija.ija2024.homework2.game.DifficultyLevels.GameDifficulty;
 import java.util.HashMap;
@@ -20,6 +21,7 @@ public class GameGenerator {
 
     static {
         difficultyMap.put(GeneralDifficulty.easy, () -> new EasyDifficulty());
+        difficultyMap.put(GeneralDifficulty.medium, () -> new MediumDifficulty());
         // TODO: Add more difficulty levels and their corresponding constructors
     }
 
