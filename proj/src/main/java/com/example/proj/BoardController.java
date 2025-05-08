@@ -193,6 +193,9 @@ public class BoardController implements Observer {
 
         logOutput.append("END BOARD CREATION").append("\n");
         this.createdGame = game;
+        createdGame.init();
+        update(createdGame.node( new Position(createdGame.powerRow, createdGame.powerCol)));
+        createdGame.update(createdGame.node( new Position(createdGame.powerRow, createdGame.powerCol)));
         if(game == null) {
             System.out.println("HOVNO GENEROVANE ");
             return;
@@ -397,6 +400,8 @@ public class BoardController implements Observer {
         }
     }
 
+    // LOG
+
     @FXML
     public void saveCUrrentGame() {
         saveToLogFile();
@@ -505,4 +510,6 @@ public class BoardController implements Observer {
         logData = null;
         logLine = 0;
     }
+
+    // LOG
 }
