@@ -50,7 +50,7 @@ public class HelpWindowController {
                 GameNode currentNode = currentGame.node(pos);
                 GameNode originalNode = originalGame.node(pos);
 
-                StackPane tile = createTile(row, col, currentNode, originalNode, false);
+                StackPane tile = createTile(row, col, currentNode, originalNode);
                 gridHelpBoard.add(tile, col, row);
             }
         }
@@ -80,12 +80,12 @@ public class HelpWindowController {
         });
 
         GameNode originalNode = originalGame.node(pos);
-        StackPane tile = createTile(row, col, node, originalNode, true);
+        StackPane tile = createTile(row, col, node, originalNode);
         gridHelpBoard.add(tile, col, row);
     }
 
 
-    private StackPane createTile(int row, int col, GameNode currentNode, GameNode originalNode, boolean update) {
+    private StackPane createTile(int row, int col, GameNode currentNode, GameNode originalNode) {
         ImageView originalImageView = boardTitles[row][col];
         ImageView cloned = new ImageView(originalImageView.getImage());
 
@@ -98,10 +98,7 @@ public class HelpWindowController {
         StackPane stack = new StackPane(cloned);
 
         if (currentNode != null && originalNode != null && !currentNode.isEmpty()) {
-            int rotations = update ? rotationsToMatchOriginal(
-                    new ArrayList<>(currentNode.sides),
-                    new ArrayList<>(originalNode.sides)
-            ) : BoardController.countRotationsToMatch(
+            int rotations = rotationsToMatchOriginal(
                     new ArrayList<>(currentNode.sides),
                     new ArrayList<>(originalNode.sides)
             );

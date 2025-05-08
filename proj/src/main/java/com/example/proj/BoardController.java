@@ -28,10 +28,8 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import javafx.util.Duration;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.HashSet;
+
+import java.util.*;
 
 public class BoardController implements Observer {
 
@@ -134,6 +132,7 @@ public class BoardController implements Observer {
         if(helpWindowController != null) {
 
             helpWindowController.updateGame(node);
+
         } else {
             System.out.println("SEM NULL");
 
@@ -149,7 +148,8 @@ public class BoardController implements Observer {
 
         if (game == null)
             return;
-
+        copyGame = copyByValue(game);
+        randomizeBoardRotation(game);
         boardTitles = new ImageView[game.rows()][game.cols()];
 
         ColorAdjust litTitle = new ColorAdjust();
@@ -190,18 +190,39 @@ public class BoardController implements Observer {
                 logOutput.append(node).append("\n"); // instead of sys.out etc node.toString()
             }
         }
+
         logOutput.append("END BOARD CREATION").append("\n");
         this.createdGame = game;
         if(game == null) {
             System.out.println("HOVNO GENEROVANE ");
             return;
         }
-        copyGame = copyByValue(game);
 
         if (timedMode) {
             startTimer(startTime);
         }
     }
+
+    private void randomizeBoardRotation(Game game) {
+        Random rand = new Random();
+
+        for (int row = 1; row <= game.rows(); row++) {
+            for (int col = 1; col <= game.cols(); col++) {
+                Position pos = new Position(row, col);
+                GameNode node = game.node(pos);
+
+                if (node == null || node.isEmpty()) {
+                    continue;
+                }
+
+                int rotations = rand.nextInt(4); // 0 to 3
+                for (int i = 0; i < rotations; i++) {
+                    node.turn();
+                }
+            }
+        }
+    }
+
 
     public Game copyByValue(Game original) {
         Game copy = Game.create(original.rows(), original.cols());
