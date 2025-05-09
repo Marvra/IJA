@@ -1,3 +1,4 @@
+
 package com.example.proj;
 
 import ija.ija2024.tool.common.Observable;
@@ -27,7 +28,6 @@ import javafx.util.Duration;
 
 import java.util.*;
 
-import com.example.proj.Position;
 import com.example.proj.game.Game;
 
 public class BoardController implements Observer {
@@ -35,7 +35,7 @@ public class BoardController implements Observer {
     private int imageWidth = 50;
     private int imageHeight = 50;
     private Game createdGame;
-    private ImageView[][] boardTitles;
+    private ImageView[][] boardTiles;
 
 
     // TIME
@@ -81,7 +81,7 @@ public class BoardController implements Observer {
 
     /**
      * Creates the game board based on the given game.
-     * It initializes the board titles and sets up the grid.
+     * It initializes the board tiles and sets up the grid.
      * It also randomizes the board rotation and sets up the timer if needed.
      *
      * @param game The game object containing the board.
@@ -92,10 +92,10 @@ public class BoardController implements Observer {
             return;
         copyGame = copyByValue(game);
         randomizeBoardRotation(game);
-        boardTitles = new ImageView[game.rows()][game.cols()];
+        boardTiles = new ImageView[game.rows()][game.cols()];
 
-        ColorAdjust litTitle = new ColorAdjust();
-        litTitle.setBrightness(1.0);
+        ColorAdjust litTile = new ColorAdjust();
+        litTile.setBrightness(1.0);
 
         logOutput = new StringBuilder();
         logOutput.append("BOARD DIMENSIONS : " + "[" + game.rows() + "@" + game.cols() + "]").append("\n");
@@ -112,15 +112,15 @@ public class BoardController implements Observer {
 
                 Image image = selectCorrectImageTitle(node);
 
-                ImageView title = new ImageView(image);
+                ImageView tile = new ImageView(image);
 
                 int numberOfRotations = numberOfRotations(node.sides.size(), node);
-                title.setRotate((title.getRotate() + 90 * numberOfRotations) % 360);
+                tile.setRotate((tile.getRotate() + 90 * numberOfRotations) % 360);
 
-                boardTitles[row][col] = title;
-                gridBoard.add(title, col, row);
+                boardTiles[row][col] = tile;
+                gridBoard.add(tile, col, row);
 
-                StackPane tileContainer = new StackPane(title);
+                StackPane tileContainer = new StackPane(tile);
                 tileContainer.getStyleClass().add("board-tile");
 
                 gridBoard.add(tileContainer, col, row);
@@ -131,8 +131,8 @@ public class BoardController implements Observer {
                 node.addObserver(this);
 
 
-                title.setPickOnBounds(true);
-                title.setOnMouseClicked(mouseClickedEvent -> printClickedTitle(title, node));
+                tile.setPickOnBounds(true);
+                tile.setOnMouseClicked(mouseClickedEvent -> printClickedTile(tile, node));
                 System.out.println(node.toString()); // PRINT ONLY NOT EMPTY
                 logOutput.append(node).append("\n"); // instead of sys.out etc node.toString()
             }
@@ -245,7 +245,7 @@ public class BoardController implements Observer {
         int row = pos.getRow() - 1;
         int col = pos.getCol() - 1;
 
-        ImageView view = boardTitles[row][col];
+        ImageView view = boardTiles[row][col];
         if (node.light()) {
             Glow glow = new Glow(1.0);
             view.setEffect(glow);
@@ -278,7 +278,7 @@ public class BoardController implements Observer {
 
             helpWindowController = loader.getController();
 
-            helpWindowController.initHelpBoard(createdGame, copyGame, gridBoard, boardTitles);
+            helpWindowController.initHelpBoard(createdGame, copyGame, gridBoard, boardTiles);
 
             helpWindowStage = new Stage();
             helpWindowStage.setTitle("Help");
@@ -388,7 +388,7 @@ public class BoardController implements Observer {
                 base = base + "L_" + count + ".png";
             }
         } else {
-            base = base + "_" + count + ".png"; // napr.: L_2,P_3 etc.
+            base = base + "_" + count + ".png"; // napr: L_2,P_3 etc.
         }
         return new Image(getClass().getResourceAsStream(base), imageHeight, imageWidth, false, false);
     }
@@ -457,16 +457,16 @@ public class BoardController implements Observer {
     }
 
     /**
-     * Prints the clicked title and updates the game node.
+     * Prints the clicked tile  to log and updates the game node.
      *
-     * @param title The ImageView representing the clicked title.
-     * @param node The GameNode associated with the clicked title.
+     * @param tile The ImageView representing the clicked tile.
+     * @param node The GameNode associated with the clicked tile.
      */
-    private void printClickedTitle(ImageView title, GameNode node) {
+    private void printClickedTile(ImageView tile, GameNode node) {
 
         node.turn();
 
-        title.setRotate((title.getRotate() + 90) % 360);
+        tile.setRotate((tile.getRotate() + 90) % 360);
 
         if(helpWindowController != null) {
             helpWindowController.updateGame(node);
@@ -488,8 +488,8 @@ public class BoardController implements Observer {
 
     /**
      * Saves the current game to a log file.
-     * It creates a new file with the name based on the current time and difficulty level.
-     * log is saved in the resources/log folder.
+     * creates  new file with the name based of the current time and difficulty level.
+     * log is saved in the lib.
      */
     private void saveToLogFile() {
         String timestamp = String.valueOf(System.currentTimeMillis());
@@ -522,8 +522,8 @@ public class BoardController implements Observer {
 
     /**
      * Used to set the log mode.
-     * It sets the log data and disables the grid board.
-     * It also enables the next, prev, play buttons.
+     * set the log data and disables the grid board.
+     * enables the next, prev, play buttons.
      *
      * @param log list of strings representing the log
      */
@@ -546,7 +546,7 @@ public class BoardController implements Observer {
 
     /**
      * Used to go to next move in log (next line in current log).
-     * It updates game with the next line from log.
+     * Updates game with the next line from log.
      *
      * @param event event that triggered method
      */
@@ -568,7 +568,7 @@ public class BoardController implements Observer {
 
     /**
      * Used to go back to previous move in log (previous line in current log).
-     * It updates game with the previous line from log.
+     * updates game with the previous line from log.
      *
      * @param event event that triggered method
      */
@@ -590,14 +590,14 @@ public class BoardController implements Observer {
 
     /**
      * Updates the game with the given line from the log.
-     * It creates a new Position object and updates the game node.
+     * ceates a new Position object and updates the game node.
      * Used in log mode in prev and next move
      *
      * @param line line from log file
      */
     private void updateGame(String line) {
         Position position = LogController.stringToGameNode(line, createdGame, true);
-        printClickedTitle(boardTitles[position.getRow() - 1][position.getCol() - 1], createdGame.node(position));
+        printClickedTile(boardTiles[position.getRow() - 1][position.getCol() - 1], createdGame.node(position));
     }
 
     /**

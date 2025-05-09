@@ -23,29 +23,29 @@ public class HelpWindowController {
     @FXML
     private GridPane gridHelpBoard;
 
-    private ImageView[][] boardTitles;
+    private ImageView[][] boardTiles;
 
     private Game currentGame;
     private Game originalGame;
 
     /**
-     * Initializes the help board with the original game state.
+     * Initializes help board with the original game state.
      *
-     * @param game          The current game instance.
-     * @param original      The original game instance.
-     * @param originalGrid  The grid pane of the original game.
-     * @param originalBoardTitles The image views of the original board titles.
+     * @param game  current game instance.
+     * @param original  original game instance.
+     * @param originalGrid  grid pane of the original game.
+     * @param originalBoardTiles image views of the original board titles.
      */
-    public void initHelpBoard(Game game, Game original, GridPane originalGrid, ImageView[][] originalBoardTitles) {
+    public void initHelpBoard(Game game, Game original, GridPane originalGrid, ImageView[][] originalBoardTiles) {
         currentGame = game;
         originalGame = original;
-        boardTitles = originalBoardTitles;
+        boardTiles = originalBoardTiles;
 
         gridHelpBoard.getChildren().clear();
 
         for (Node node : originalGrid.getChildren()) {
             if (node instanceof StackPane tilePane) {
-                // Extract the ImageView from the StackPane
+                // get stack pane
                 for (Node child : tilePane.getChildren()) {
                     if (child instanceof ImageView originalImageView) {
                         Integer row = GridPane.getRowIndex(tilePane);
@@ -59,7 +59,7 @@ public class HelpWindowController {
 
                         StackPane tile = createTile(row, col, currentNode, originalNode);
                         gridHelpBoard.add(tile, col, row);
-                        break; // Found ImageView, no need to check more children
+                        break;
                     }
                 }
             }
@@ -68,9 +68,9 @@ public class HelpWindowController {
 
 
     /**
-     * Updates the help board with the current game state.
+     * Updates help board with the current game state.
      *
-     * @param node The current game node to be updated.
+     * @param node current game node to be updated.
      */
     public void updateGame(GameNode node) {
         if (node == null || gridHelpBoard == null) {
@@ -99,14 +99,14 @@ public class HelpWindowController {
     /**
      * Creates a tile for the help board.
      *
-     * @param row          The row index of the tile.
-     * @param col          The column index of the tile.
-     * @param currentNode  The current game node.
-     * @param originalNode The original game node.
-     * @return A StackPane containing the tile and its label.
+     * @param row   row index of the tile.
+     * @param col   column index of the tile.
+     * @param currentNode  current game node.
+     * @param originalNode original game node.
+     * @return StackPane containing the tile and its label.
      */
     private StackPane createTile(int row, int col, GameNode currentNode, GameNode originalNode) {
-        ImageView originalImageView = boardTitles[row][col];
+        ImageView originalImageView = boardTiles[row][col];
         ImageView cloned = new ImageView(originalImageView.getImage());
 
         cloned.setRotate(originalImageView.getRotate());
@@ -137,9 +137,9 @@ public class HelpWindowController {
     /**
      * Calculates the number of rotations needed to match the original game state.
      *
-     * @param current The current sides of the game node.
-     * @param target  The target sides of the original game node.
-     * @return The number of rotations needed to match the original game state.
+     * @param current current sides of the game node.
+     * @param target target sides of original game node.
+     * @return int of rotations needed to match original game state.
      */
     public static int rotationsToMatchOriginal(List<Side> current, List<Side> target) {
         List<Side> targetCopy = new ArrayList<>(target);
