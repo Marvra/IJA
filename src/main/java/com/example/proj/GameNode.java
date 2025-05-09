@@ -1,9 +1,7 @@
 package com.example.proj;
 
-
 import ija.ija2024.tool.common.AbstractObservableField;
 import ija.ija2024.tool.common.ToolField;
-
 import java.util.Arrays;
 import java.util.HashSet;
 
