@@ -2,12 +2,25 @@
 
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Text?>
 
-<AnchorPane prefHeight="600.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.proj.MainMenuController">
+<AnchorPane
+        prefHeight="600.0" prefWidth="600.0"
+        xmlns="http://javafx.com/javafx/23.0.1"
+        xmlns:fx="http://javafx.com/fxml/1"
+        fx:controller="com.example.proj.MainMenuController"
+        stylesheets="@styles/main_menu_style.css">
+
    <children>
-      <Button fx:id="difficultyBtn" layoutX="268.0" layoutY="231.0" mnemonicParsing="false" onAction="#easyDifficulty" text="Easy" />
-      <Button fx:id="logGameButton" layoutX="246.0" layoutY="475.0" mnemonicParsing="false" onAction="#logGameScreen" text="Load Game" />
-      <Button fx:id="difficultyBtn2" layoutX="258.0" layoutY="288.0" mnemonicParsing="false" onAction="#mediumDifficulty" text="Medium" />
-      <Button fx:id="difficultyBtn1" layoutX="268.0" layoutY="340.0" mnemonicParsing="false" onAction="#hardDifficulty" text="Hard" />
+      <VBox alignment="CENTER" spacing="20" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="100.0" AnchorPane.bottomAnchor="100.0">
+         <children>
+            <Text text="Select Difficulty" styleClass="title-text"/>
+            <Button fx:id="difficultyBtn" text="Easy" onAction="#easyDifficulty" styleClass="button-base, button-easy" />
+            <Button fx:id="difficultyBtn2" text="Medium" onAction="#mediumDifficulty" styleClass="button-base, button-medium" />
+            <Button fx:id="difficultyBtn1" text="Hard" onAction="#hardDifficulty" styleClass="button-base, button-hard" />
+            <Button fx:id="logGameButton" text="Load Game" onAction="#logGameScreen" styleClass="button-base, button-load-game" />
+         </children>
+      </VBox>
    </children>
 </AnchorPane>

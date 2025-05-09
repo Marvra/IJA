@@ -4,22 +4,44 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
 
-<AnchorPane prefHeight="706.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.proj.BoardController">
+<AnchorPane
+        prefHeight="600.0" prefWidth="600.0"
+        maxHeight="Infinity" maxWidth="Infinity"
+        xmlns="http://javafx.com/javafx/23.0.1"
+        xmlns:fx="http://javafx.com/fxml/1"
+        fx:controller="com.example.proj.BoardController"
+        stylesheets="@styles/board_style.css">
    <children>
-      <StackPane layoutX="-1.0" layoutY="101.0" prefHeight="500.0" prefWidth="600.0">
-         <children>
-            <GridPane fx:id="gridBoard" alignment="CENTER">
-            </GridPane>
-         </children>
-      </StackPane>
-      <Button fx:id="prevMoveBtn" disable="true" layoutX="52.0" layoutY="630.0" mnemonicParsing="false" onAction="#prevMove" opacity="0.0" text="&lt;" />
-      <Button fx:id="nextMoveBtn" disable="true" layoutX="520.0" layoutY="630.0" mnemonicParsing="false" onAction="#nextMove" opacity="0.0" text="&gt;" />
-      <Button fx:id="playLogBtn" disable="true" layoutX="280.0" layoutY="630.0" mnemonicParsing="false" onAction="#playMode" opacity="0.0" text="Play" />
-      <Button fx:id="backToMenuBtn" layoutX="14.0" layoutY="14.0" mnemonicParsing="false" onAction="#backToMenu" text="&lt; to menu" />
-      <Button fx:id="helpBtn" layoutX="275.0" layoutY="14.0" mnemonicParsing="false" onAction="#onHelpClicked" text="Help" />
-      <Label fx:id="timerLabel" layoutX="281.0" layoutY="59.0" />
-      <Button fx:id="saveBtn" layoutX="349.0" layoutY="14.0" mnemonicParsing="false" onAction="#saveCUrrentGame" text="Save" />
+      <VBox alignment="TOP_CENTER" spacing="20" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="20.0">
+
+         <HBox alignment="CENTER" spacing="15" styleClass="control-buttons">
+            <children>
+               <Button fx:id="backToMenuBtn" mnemonicParsing="false" onAction="#backToMenu" styleClass="button-base, button-menu" text="to Menu" />
+               <Button fx:id="helpBtn" mnemonicParsing="false" onAction="#onHelpClicked" styleClass="button-base, button-help" text="Help" />
+               <Button fx:id="saveBtn" mnemonicParsing="false" onAction="#saveCUrrentGame" styleClass="button-base, button-save" text="Save" />
+            </children>
+         </HBox>
+
+         <Label fx:id="timerLabel" styleClass="timer-label"/>
+
+         <StackPane prefHeight="500.0" prefWidth="600.0">
+            <children>
+               <GridPane fx:id="gridBoard" alignment="CENTER" styleClass="board-grid">
+               </GridPane>
+            </children>
+         </StackPane>
+
+         <HBox alignment="CENTER" spacing="20" styleClass="nav-buttons">
+            <children>
+               <Button fx:id="prevMoveBtn" disable="true" onAction="#prevMove" opacity="0" styleClass="button-base, nav-button" text="&lt;" />
+               <Button fx:id="playLogBtn" disable="true" onAction="#playMode" opacity="0" styleClass="button-base, nav-button" text="Play" />
+               <Button fx:id="nextMoveBtn" disable="true" onAction="#nextMove" opacity="0" styleClass="button-base, nav-button" text="&gt;" />
+            </children>
+         </HBox>
+      </VBox>
    </children>
 </AnchorPane>

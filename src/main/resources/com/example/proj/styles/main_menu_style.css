@@ -1,0 +1,42 @@
+.title-text {
+    -fx-font-size: 28px;
+    -fx-font-weight: bold;
+    -fx-fill: #333333;
+}
+
+.main-title {
+    -fx-font-size: 32px;
+    -fx-font-weight: bold;
+    -fx-fill: #333333;
+}
+
+.button-base {
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-padding: 10 20;
+    -fx-background-color: grey;
+    -fx-background-radius: 6;
+    -fx-effect: dropshadow(two-pass-box, rgba(0,0,0,0.1), 3, 0, 0, 2);
+}
+
+.button-base:hover {
+    -fx-effect: dropshadow(two-pass-box, rgba(0,0,0,0.3), 4, 0, 0, 6);
+    -fx-scale-x: 1.05;
+    -fx-scale-y: 1.05;
+}
+
+.button-easy:hover {
+    -fx-background-color: #8bc34a;
+}
+
+.button-medium:hover {
+    -fx-background-color: #ffc107;
+}
+
+.button-hard:hover {
+    -fx-background-color: #f44336;
+}
+
+.button-load-game:hover {
+    -fx-background-color: #2196f3;
+}
