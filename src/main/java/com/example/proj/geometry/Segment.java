@@ -79,14 +79,31 @@ public class Segment extends Line {
 		return vector.length();
 	}
 
+	/**
+	 * Gets the start point of the segment.
+	 * 
+	 * @return The start point of the segment.
+	 */
 	public Point getStart() {
 		return start;
 	}
 
+	/**
+	 * Gets the end point of the segment.
+	 * 
+	 * @return The end point of the segment.
+	 */
 	public Point getEnd() {
 		return this.getPoint(1);
 	}
 
+	/**
+	 * Returns a string representation of the segment in the format "(start, end)",
+	 * where "start" and "end" are the string representations of the segment's start
+	 * and end points.
+	 *
+	 * @return A string representation of the segment.
+	 */
 	@Override
 	public String toString() {
 		return "(" + getStart().toString() + ", " + getEnd().toString() + ")";

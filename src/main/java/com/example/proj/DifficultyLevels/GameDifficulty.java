@@ -99,6 +99,21 @@ public class GameDifficulty {
 		return nodes;
 	}
 
+	/**
+	 * Generates a list of random positions for placing nodes on a game grid.
+	 * Ensures that generated positions maintain a minimum distance from the first
+	 * position (assumed to be a power node) to prevent clustering.
+	 * 
+	 * The function generates a random number of positions between the specified
+	 * minimum and maximum values. If either minimum or maximum is zero, it is
+	 * reset to one. The positions are randomly generated within the grid's
+	 * dimensions, ensuring they are not located on the grid's edge.
+	 * 
+	 * @param minimum The minimum number of positions to generate.
+	 * @param maximum The maximum number of positions to generate.
+	 * @return A list of unique Position objects representing node placements on
+	 *         the grid.
+	 */
 	public List<Position> generatePositions(int minimum, int maximum) {
 		if (minimum == 0) {
 			minimum = 1;
@@ -319,6 +334,15 @@ public class GameDifficulty {
 		return game;
 	}
 
+	/**
+	 * Iteratively reduces link nodes in the game grid that do not lead to
+	 * meaningful paths. If a link node has only one connection after
+	 * evaluating its empty neighbors, it is converted to an empty node.
+	 * This process continues until no more nodes are converted.
+	 * 
+	 * @param game The game whose grid is to be reduced by removing redundant
+	 *             link nodes and converting them to empty nodes.
+	 */
 	public void reduceEmpty(Game game) {
 		boolean changed;
 		do {
@@ -377,6 +401,14 @@ public class GameDifficulty {
 		}
 	}
 
+	/**
+	 * Randomly removes one or more sides from link nodes in the grid, only if the
+	 * number of accessible bulbs does not decrease. If the number of accessible
+	 * bulbs does decrease, the removed side is put back and the loop continues.
+	 * This is done to reduce the number of possible solutions.
+	 * 
+	 * @param game The game to reduce.
+	 */
 	protected void reduceGrid(Game game) {
 		for (int i = 1; i <= game.rows(); i++) {
 			for (int j = 1; j <= game.cols(); j++) {
@@ -403,6 +435,18 @@ public class GameDifficulty {
 		}
 	}
 
+	/**
+	 * Recursively counts the number of accessible bulb nodes in the game starting
+	 * 
+	 * The function traverses the game grid by following connected nodes, ensuring
+	 * that each node is only visited once to prevent cycles.
+	 * 
+	 * @param game     The game instance
+	 * @param position The current position in the grid being checked. If null, the
+	 *                 search begins from the power node.
+	 * @param visited  A set of positions already checked to avoid cycles.
+	 * @return The count of bulb nodes accessible from the power node.
+	 */
 	protected int accessibleBulbCount(Game game, Position position, Set<Position> visited) {
 		if (position == null || visited == null) {
 			// Find the power node
