@@ -34,28 +34,11 @@ public class BoardController implements Observer {
 
     private int imageWidth = 50;
     private int imageHeight = 50;
+    private Game createdGame;
+    private ImageView[][] boardTitles;
 
-    @FXML
-    GridPane gridBoard;
-    @FXML
-    Button nextMoveBtn;
-    @FXML
-    Button prevMoveBtn;
-    @FXML
-    Button playLogBtn;
-    @FXML
-    Button backToMenuBtn;
-    @FXML
-    Button helpBtn;
-    @FXML
-    Button saveBtn;
-    @FXML
-    Label uWonLabel;
 
     // TIME
-    @FXML
-    private Label timerLabel;
-
     private Timeline timer;
     private int timeRemaining;
     private boolean timedMode = false;
@@ -74,87 +57,27 @@ public class BoardController implements Observer {
     private StringBuilder logOutput;
     //LOG
 
-    private Game createdGame;
-
-    private ImageView[][] boardTitles;
-
-    /**
-     * Goes back to the main menu when the button is clicked.
-     *
-     * @param event The event that triggered the method.
-     */
-    public void backToMenu(ActionEvent event) {
-        if (timer != null) {
-            timer.stop();
-            timer = null;
-        }
-
-        if (helpWindowStage != null) {
-            helpWindowStage.close();
-            helpWindowStage = null;
-        }
-
-        MainMenuController.changeScreen(event, "game_mode_selection.fxml");
-    }
-
-
-    /**
-     * Initializes the board with the given game.
-     * It sets up the grid and creates the board based on the game.
-     *
-     * @param event The game object containing the board.
-     */
     @FXML
-    public void onHelpClicked(ActionEvent event) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("help_window.fxml"));
-            Parent root = loader.load();
+    private GridPane gridBoard;
+    @FXML
+    private Button nextMoveBtn;
+    @FXML
+    private Button prevMoveBtn;
+    @FXML
+    private Button playLogBtn;
+    @FXML
+    private Button backToMenuBtn;
+    @FXML
+    private Button helpBtn;
+    @FXML
+    private Button saveBtn;
+    @FXML
+    private Label uWonLabel;
+    @FXML
+    private Label timerLabel;
 
-            helpWindowController = loader.getController();
 
-            helpWindowController.initHelpBoard(createdGame, copyGame, gridBoard, boardTitles);
-
-            helpWindowStage = new Stage();
-            helpWindowStage.setTitle("Help");
-            helpWindowStage.setScene(new Scene(root));
-            helpWindowStage.sizeToScene();
-            helpWindowStage.show();
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    /**
-     * Updates the game board based on the observable pattern.
-     * It checks if the observable is an instance of GameNode and updates the corresponding ImageView.
-     * It also updates the help window if it is open.
-     *
-     * @param o The observable object that triggered the update.
-     */
-    @Override
-    public void update(Observable o) {
-        if (!(o instanceof GameNode))
-            return;
-        GameNode node = (GameNode) o;
-        Position pos = node.getPosition();
-        int row = pos.getRow() - 1;
-        int col = pos.getCol() - 1;
-
-        ImageView view = boardTitles[row][col];
-        if (node.light()) {
-            Glow glow = new Glow(1.0);
-            view.setEffect(glow);
-        } else {
-            view.setEffect(null);
-        }
-
-        if(helpWindowController != null) {
-
-            helpWindowController.updateGame(node);
-        }
-
-    }
+    // --- GAME CREATION ---
 
     /**
      * Creates the game board based on the given game.
@@ -181,7 +104,6 @@ public class BoardController implements Observer {
         for (int row = 0; row < game.rows(); row++) {
             for (int col = 0; col < game.cols(); col++) {
 
-                // SKIP EMPTY
                 Position position = new Position(row + 1, col + 1);
                 GameNode node = game.node(new Position(position.getRow(), position.getCol()));
 
@@ -198,10 +120,10 @@ public class BoardController implements Observer {
                 boardTitles[row][col] = title;
                 gridBoard.add(title, col, row);
 
-                StackPane tileContainer = new StackPane(title); // Wrap in a container
-                tileContainer.getStyleClass().add("board-tile"); // Apply border/padding class
+                StackPane tileContainer = new StackPane(title);
+                tileContainer.getStyleClass().add("board-tile");
 
-                gridBoard.add(tileContainer, col, row); // Add the container instead of the raw ImageView
+                gridBoard.add(tileContainer, col, row);
 
 
                 if (node.isEmpty())
@@ -237,7 +159,6 @@ public class BoardController implements Observer {
      */
     private void randomizeBoardRotation(Game game) {
         Random rand = new Random();
-
         for (int row = 1; row <= game.rows(); row++) {
             for (int col = 1; col <= game.cols(); col++) {
                 Position pos = new Position(row, col);
@@ -246,12 +167,127 @@ public class BoardController implements Observer {
                 if (node == null || node.isEmpty()) {
                     continue;
                 }
-
-                int rotations = rand.nextInt(4); // 0 to 3
+                int rotations;
+                if (node.isBulb()) {
+                    rotations = rand.nextInt(3) + 1;
+                } else {
+                    rotations = rand.nextInt(4);
+                }
                 for (int i = 0; i < rotations; i++) {
                     node.turn();
                 }
             }
+        }
+    }
+
+
+    /**
+     * Checks if all bulbs are lit in the game.
+     *
+     * @return true if all bulbs are lit, false otherwise.
+     */
+    private boolean allBulbsAreLit() {
+        for (int row = 0; row < createdGame.rows(); row++) {
+            for (int col = 0; col < createdGame.cols(); col++) {
+                GameNode node = createdGame.node(new Position(row + 1, col + 1));
+                if (node != null && node.type == Type.BULB && !node.light()) {
+                    return false;
+                }
+            }
+        }
+        if (timer != null) {
+            timer.stop();
+        }
+        return true;
+    }
+
+    /**
+     * Ends the game and shows a message.
+     */
+    private void endGame() {
+        gridBoard.setDisable(true);
+        uWonLabel.setText("U Won!");
+    }
+
+
+    /**
+     * Goes back to the main menu when the button is clicked.
+     *
+     * @param event The event that triggered the method.
+     */
+    public void backToMenu(ActionEvent event) {
+        if (timer != null) {
+            timer.stop();
+            timer = null;
+        }
+
+        if (helpWindowStage != null) {
+            helpWindowStage.close();
+            helpWindowStage = null;
+        }
+
+        MainMenuController.changeScreen(event, "game_mode_selection.fxml");
+    }
+
+    /**
+     * Updates the game board based on the observable pattern.
+     * It checks if the observable is an instance of GameNode and updates the corresponding ImageView.
+     * It also updates the help window if it is open.
+     *
+     * @param o The observable object that triggered the update.
+     */
+    @Override
+    public void update(Observable o) {
+        if (!(o instanceof GameNode))
+            return;
+        GameNode node = (GameNode) o;
+        Position pos = node.getPosition();
+        int row = pos.getRow() - 1;
+        int col = pos.getCol() - 1;
+
+        ImageView view = boardTitles[row][col];
+        if (node.light()) {
+            Glow glow = new Glow(1.0);
+            view.setEffect(glow);
+        } else {
+            view.setEffect(null);
+        }
+
+        if(helpWindowController != null) {
+
+            helpWindowController.updateGame(node);
+        }
+
+    }
+
+    // --- GAME CREATION ---
+
+    // --- HELP WINDOW HELPER ---
+
+    /**
+     * Initializes the board with the given game.
+     * It sets up the grid and creates the board based on the game.
+     *
+     * @param event The game object containing the board.
+     */
+    @FXML
+    public void onHelpClicked(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("help_window.fxml"));
+            Parent root = loader.load();
+
+            helpWindowController = loader.getController();
+
+            helpWindowController.initHelpBoard(createdGame, copyGame, gridBoard, boardTitles);
+
+            helpWindowStage = new Stage();
+            helpWindowStage.setTitle("Help");
+            helpWindowStage.setScene(new Scene(root));
+            helpWindowStage.sizeToScene();
+            helpWindowStage.show();
+
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
@@ -279,30 +315,9 @@ public class BoardController implements Observer {
 
         return copy;
     }
+    // --- HELP WINDOW HELPER ---
 
-
-    // NOT IDEAL FIX LATER
-    /**
-     * Checks if all bulbs are lit in the game.
-     *
-     * @return true if all bulbs are lit, false otherwise.
-     */
-    private boolean allBulbsAreLit() {
-        for (int row = 0; row < createdGame.rows(); row++) {
-            for (int col = 0; col < createdGame.cols(); col++) {
-                GameNode node = createdGame.node(new Position(row + 1, col + 1));
-                if (node != null && node.type == Type.BULB && !node.light()) {
-                    return false;
-                }
-            }
-        }
-        if (timer != null) {
-            timer.stop();
-        }
-        return true;
-    }
-
-    // TIME
+    // --- TIME MODE HELPER ---
     /**
      * Sets the timed mode for the game.
      *
@@ -339,15 +354,10 @@ public class BoardController implements Observer {
         timer.setCycleCount(Timeline.INDEFINITE);
         timer.play();
     }
-    // TIME
-    /**
-     * Ends the game and shows a message.
-     */
-    private void endGame() {
-        gridBoard.setDisable(true);
-        uWonLabel.setText("U Won!");
-    }
+    // --- TIME MODE HELPER ---
 
+
+    // --- CORRECT IMAGE SELECTION ---
     /**
      * Selects the correct image for the given GameNode based on its type and sides.
      *
@@ -383,8 +393,6 @@ public class BoardController implements Observer {
         return new Image(getClass().getResourceAsStream(base), imageHeight, imageWidth, false, false);
     }
 
-
-    // TO GAME PROBABLY
     /**
      * Counts the number of rotations needed to match the sides of the given GameNode.
      *
@@ -433,12 +441,10 @@ public class BoardController implements Observer {
         return countRotationsToMatch(origSides, sidesPic);
     }
 
-    // TO GAME PROBABLY
     static public boolean sameSides(List<Side> a, List<Side> b) {
         return new HashSet<>(a).equals(new HashSet<>(b));
     }
 
-    // TO GAME PROBABLY
     static public void rotateRight(List<Side> sides) {
         for (int i = 0; i < sides.size(); i++) {
             sides.set(i, switch (sides.get(i)) {
@@ -472,9 +478,9 @@ public class BoardController implements Observer {
             endGame();
         }
     }
+    // --- CORRECT IMAGE SELECTION ---
 
-    // LOG
-
+    //  --- LOG HELPER ---
     @FXML
     public void saveCUrrentGame() {
         saveToLogFile();
@@ -616,5 +622,5 @@ public class BoardController implements Observer {
         logLine = 0;
     }
 
-    // LOG
+    //  --- LOG HELPER ---
 }
