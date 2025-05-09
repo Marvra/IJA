@@ -1,12 +1,15 @@
 package com.example.proj;
 
+import com.sun.tools.javac.Main;
 import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
+import java.awt.*;
 import java.io.IOException;
 
 import com.example.proj.DifficultyLevels.EasyDifficulty;
@@ -16,6 +19,12 @@ import com.example.proj.game.GameGenerator;
 
 public class MainMenuController {
 
+    private static boolean startWithTimer = false;
+
+    public static void changeScreenTimer(ActionEvent event, String fxmlName) {
+        changeScreen(event, fxmlName);
+        startWithTimer = true;
+    }
     /**
      * Used to change the screen when a button is clicked (event).
      * It loads the fxml file and sets the scene to the stage and shows it.
@@ -43,19 +52,6 @@ public class MainMenuController {
             return null;
         }
     }
-
-
-    /**
-     * Used to start the game when the start button is clicked.
-     * it changes the screen using changeScreen method.
-     *
-     * @param event event that triggered the method
-     */
-
-    public void startGame(ActionEvent event){
-        changeScreen(event, "game_mode_selection.fxml");
-    }
-
     /**
      * Used to choose the difficulty of the game when the button is clicked.
      * It changes the screen using changeScreen method and creates a new game with the chosen difficulty.
@@ -64,23 +60,43 @@ public class MainMenuController {
      * @param difficulty difficulty level of the game
      * @param dimensions dimensions of the game board
      */
-    private void chooseDifficulty(ActionEvent event, GeneralDifficulty difficulty, int dimensions){
+    private void chooseDifficulty(ActionEvent event, GeneralDifficulty difficulty, int dimensions) {
         FXMLLoader loader = new FXMLLoader(MainMenuController.class.getResource("board.fxml"));
 
         try {
             Parent root = loader.load();
-            Stage stage = (Stage)((Node)event.getSource()).getScene().getWindow();
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             Scene scene = new Scene(root);
             stage.setScene(scene);
 
             BoardController boardController = loader.getController();
             GameGenerator generator = new GameGenerator(dimensions, dimensions, difficulty);
-            Game game = generator.generate();
+            Game game = null;
 
-            boardController.setTimedMode(true, 50);
+            if (difficulty == GeneralDifficulty.easy) { // no time for proper fix
+                while (true) {
+                    try {
+                        game = generator.generate();
+                        break;
+                    } catch (IndexOutOfBoundsException e) {
+                        System.out.println("regeneration");
+                    }
+                }
+            } else {
+                game = generator.generate();
+            }
+
+
+            int time = -1;
+            if (startWithTimer) {
+                if (difficulty == GeneralDifficulty.easy) time = 30;
+                else if (difficulty == GeneralDifficulty.medium) time = 60;
+                else time = 120;
+
+                boardController.setTimedMode(true, time);
+            }
             boardController.createBoard(game);
 
-            // Now that everything is created, resize properly
             stage.sizeToScene();
             stage.show();
 
@@ -88,7 +104,6 @@ public class MainMenuController {
             System.out.println("Error loading board.fxml: " + e.getMessage());
         }
     }
-
 
     /**
      * Method used to choose easy difficulty when the button is clicked.
@@ -116,31 +131,21 @@ public class MainMenuController {
      *
      * @param event event that triggered the method
      */
-    public void classicMode(ActionEvent event){
-        FXMLLoader loader = changeScreen(event, "game_mode_selection.fxml");
-
-        // You can add extra logic here, if necessary, to pass game mode type or any necessary data
-        // For instance, you can set the "Classic" mode in a Game object or pass a flag to the next screen
-    }
+    public void classicMode(ActionEvent event){changeScreen(event, "game_mode_selection.fxml");}
 
     /**
      * Method to start a Timeout Mode Game
      *
      * @param event event that triggered the method
      */
-    public void timerMode(ActionEvent event){
-        FXMLLoader loader = changeScreen(event, "game_mode_selection.fxml");
+    public void timerMode(ActionEvent event){changeScreen(event, "game_mode_selection.fxml");}
 
-        // You can add extra logic here, if necessary, to pass game mode type or any necessary data
-        // For instance, you can set the "Timer" mode in a Game object or pass a flag to the next screen
-    }
+    public void backToMainMenu(ActionEvent event){changeScreen(event, "main_menu.fxml");}
 
     /**
      * Method used to choose custom difficulty when the button is clicked.
      *
      * @param event event that triggered the method
      */
-    public void logGameScreen(ActionEvent event){
-        changeScreen(event, "log_game_selection.fxml");
-    }
+    public void logGameScreen(ActionEvent event){changeScreen(event, "log_game_selection.fxml");}
 }

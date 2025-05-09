@@ -25,6 +25,15 @@
     -fx-scale-y: 1.05;
 }
 
+.button-main-menu {
+    -fx-text-fill: #777777;
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+}
+
+.button-main-menu:hover {
+    -fx-text-fill: #555555;
+}
 .button-easy:hover {
     -fx-background-color: #8bc34a;
 }

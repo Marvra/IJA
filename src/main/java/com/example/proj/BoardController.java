@@ -16,6 +16,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import ija.ija2024.tool.common.Observable.Observer;
+import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
 import java.io.BufferedWriter;
@@ -90,7 +91,7 @@ public class BoardController implements Observer {
             helpWindowStage.close();
             helpWindowStage = null;
         }
-        MainMenuController.changeScreen(event, "game_mode_selection.fxml");
+        MainMenuController.changeScreenTimer(event, "game_mode_selection.fxml");
     }
 
     /**
@@ -112,6 +113,7 @@ public class BoardController implements Observer {
             helpWindowStage = new Stage();
             helpWindowStage.setTitle("Help");
             helpWindowStage.setScene(new Scene(root));
+            helpWindowStage.sizeToScene();
             helpWindowStage.show();
 
         } catch (IOException e) {
@@ -191,6 +193,12 @@ public class BoardController implements Observer {
 
                 boardTitles[row][col] = title;
                 gridBoard.add(title, col, row);
+
+                StackPane tileContainer = new StackPane(title); // Wrap in a container
+                tileContainer.getStyleClass().add("board-tile"); // Apply border/padding class
+
+                gridBoard.add(tileContainer, col, row); // Add the container instead of the raw ImageView
+
 
                 if (node.isEmpty())
                     continue; // SKIP EMPTY

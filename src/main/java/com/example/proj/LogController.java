@@ -60,7 +60,7 @@ public class LogController {
      */
     @FXML
     public void backToMenu(ActionEvent event) {
-        MainMenuController.changeScreen(event, "game_mode_selection.fxml");
+        MainMenuController.changeScreen(event, "main_menu.fxml");
     }
 
     /**

@@ -44,22 +44,28 @@ public class HelpWindowController {
         gridHelpBoard.getChildren().clear();
 
         for (Node node : originalGrid.getChildren()) {
-            if (node instanceof ImageView originalImageView) {
-                Integer row = GridPane.getRowIndex(originalImageView);
-                Integer col = GridPane.getColumnIndex(originalImageView);
-                row = (row == null) ? 0 : row;
-                col = (col == null) ? 0 : col;
+            if (node instanceof StackPane tilePane) {
+                // Extract the ImageView from the StackPane
+                for (Node child : tilePane.getChildren()) {
+                    if (child instanceof ImageView originalImageView) {
+                        Integer row = GridPane.getRowIndex(tilePane);
+                        Integer col = GridPane.getColumnIndex(tilePane);
+                        row = (row == null) ? 0 : row;
+                        col = (col == null) ? 0 : col;
 
-                Position pos = new Position(row + 1, col + 1);
-                GameNode currentNode = currentGame.node(pos);
-                GameNode originalNode = originalGame.node(pos);
+                        Position pos = new Position(row + 1, col + 1);
+                        GameNode currentNode = currentGame.node(pos);
+                        GameNode originalNode = originalGame.node(pos);
 
-                StackPane tile = createTile(row, col, currentNode, originalNode);
-                gridHelpBoard.add(tile, col, row);
+                        StackPane tile = createTile(row, col, currentNode, originalNode);
+                        gridHelpBoard.add(tile, col, row);
+                        break; // Found ImageView, no need to check more children
+                    }
+                }
             }
         }
-
     }
+
 
     /**
      * Updates the help board with the current game state.
