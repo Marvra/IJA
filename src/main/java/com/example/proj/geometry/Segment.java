@@ -1,3 +1,13 @@
+/**
+ * Segment.java
+ * 
+ * This class represents a segment in 2D space.
+ * Contains some basic segment operations, like intersection, rasterization and length.
+ * 
+ * Authors:
+ * - Jakub Ramašeuski (xramas01@stud.fit.vut.cz)
+ */
+
 package com.example.proj.common.geometry;
 
 import java.util.List;

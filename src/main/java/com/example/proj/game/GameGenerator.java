@@ -1,3 +1,14 @@
+/**
+ * GameGenerator.java
+ * 
+ * This class is responsible for generating game instances based on different difficulty levels.
+ * It does so by passing the task to one of the difficulty classes.
+ * 
+ * Authors:
+ * - Jakub Ramašeuski (xramas01@stud.fit.vut.cz)
+ * - Martin Vrablec (xvrabl06@stud.fit.vut.cz)
+ */
+
 package com.example.proj.game;
 
 import java.util.HashMap;

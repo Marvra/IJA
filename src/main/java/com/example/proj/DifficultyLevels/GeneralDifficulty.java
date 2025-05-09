@@ -1,3 +1,12 @@
+/**
+ * GeneralDifficulty.java
+ * 
+ * This enum contains all possible difficulty levels, even those that are left unused.
+ * 
+ * Authors:
+ * - Jakub Ramašeuski (xramas01@stud.fit.vut.cz)
+ */
+
 package com.example.proj.DifficultyLevels;
 
 public enum GeneralDifficulty {

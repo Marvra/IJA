@@ -1,3 +1,13 @@
+/**
+ * GameDifficulty.java
+ * 
+ * This class is responsible for generating a game with a predefined difficulty level.
+ * 
+ * Authors:
+ * - Jakub Ramašeuski (xramas01@stud.fit.vut.cz)
+ * - Martin Vrablec (xvrabl06@stud.fit.vut.cz)
+ */
+
 package com.example.proj.DifficultyLevels;
 
 import java.util.ArrayList;

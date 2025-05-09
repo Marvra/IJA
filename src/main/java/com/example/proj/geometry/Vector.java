@@ -1,3 +1,13 @@
+/**
+ * Vector.java
+ * 
+ * This class represents a vector in 2D space.
+ * Contains some basic vector operations, like dot product, angle and normalization.
+ * 
+ * Authors:
+ * - Jakub Ramašeuski (xramas01@stud.fit.vut.cz)
+ */
+
 package com.example.proj.common.geometry;
 
 public class Vector implements Cloneable {

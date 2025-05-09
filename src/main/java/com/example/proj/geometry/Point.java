@@ -1,3 +1,12 @@
+/**
+ * Point.java
+ * 
+ * This class represents a point in 2D space.
+ * 
+ * Authors:
+ * - Jakub Ramašeuski (xramas01@stud.fit.vut.cz)
+ */
+
 package com.example.proj.common.geometry;
 
 import com.example.proj.Position;

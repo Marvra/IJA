@@ -1,3 +1,12 @@
+/**
+ * EasyDifficulty.java
+ * 
+ * This class is responsible for generating a game with exactly 1 lightbulb.
+ * 
+ * Authors:
+ * - Jakub Ramašeuski (xramas01@stud.fit.vut.cz)
+ */
+
 package com.example.proj.DifficultyLevels;
 
 import java.util.Random;

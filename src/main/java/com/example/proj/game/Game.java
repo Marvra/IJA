@@ -1,3 +1,13 @@
+/**
+ * Game.java
+ * 
+ * This class holds the game state in an array of GameNodes.
+ * 
+ * Authors:
+ * - Jakub Ramašeuski (xramas01@stud.fit.vut.cz)
+ * - Martin Vrablec (xvrabl06@stud.fit.vut.cz)
+ */
+
 package com.example.proj.game;
 
 import java.util.ArrayList;
