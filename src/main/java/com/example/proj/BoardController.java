@@ -49,14 +49,17 @@ public class BoardController implements Observer {
     Button helpBtn;
     @FXML
     Button saveBtn;
+    @FXML
+    Label uWonLabel;
 
-    // TIME (vlastny conroller treba)
+    // TIME
+    @FXML
+    private Label timerLabel;
+
     private Timeline timer;
     private int timeRemaining;
     private boolean timedMode = false;
     private int startTime = 0;
-    @FXML
-    private Label timerLabel;
     // TIME
 
     // HELP
@@ -81,7 +84,6 @@ public class BoardController implements Observer {
      * @param event The event that triggered the method.
      */
     public void backToMenu(ActionEvent event) {
-
         if (timer != null) {
             timer.stop();
             timer = null;
@@ -91,8 +93,10 @@ public class BoardController implements Observer {
             helpWindowStage.close();
             helpWindowStage = null;
         }
-        MainMenuController.changeScreenTimer(event, "game_mode_selection.fxml");
+
+        MainMenuController.changeScreen(event, "game_mode_selection.fxml");
     }
+
 
     /**
      * Initializes the board with the given game.
@@ -341,13 +345,8 @@ public class BoardController implements Observer {
      */
     private void endGame() {
         gridBoard.setDisable(true);
-
-        javafx.scene.control.Alert alert = new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.INFORMATION);
-        alert.setTitle("Game Over");
-        alert.setContentText("every bulb is lit");
-        alert.showAndWait();
+        uWonLabel.setText("U Won!");
     }
-    // NOT IDEAL FIX LATER
 
     /**
      * Selects the correct image for the given GameNode based on its type and sides.

@@ -20,11 +20,6 @@ import com.example.proj.game.GameGenerator;
 public class MainMenuController {
 
     private static boolean startWithTimer = false;
-
-    public static void changeScreenTimer(ActionEvent event, String fxmlName) {
-        changeScreen(event, fxmlName);
-        startWithTimer = true;
-    }
     /**
      * Used to change the screen when a button is clicked (event).
      * It loads the fxml file and sets the scene to the stage and shows it.
@@ -131,14 +126,18 @@ public class MainMenuController {
      *
      * @param event event that triggered the method
      */
-    public void classicMode(ActionEvent event){changeScreen(event, "game_mode_selection.fxml");}
+    public void classicMode(ActionEvent event){
+        startWithTimer =false;
+        changeScreen(event, "game_mode_selection.fxml");}
 
     /**
      * Method to start a Timeout Mode Game
      *
      * @param event event that triggered the method
      */
-    public void timerMode(ActionEvent event){changeScreen(event, "game_mode_selection.fxml");}
+    public void timerMode(ActionEvent event){
+        startWithTimer = true;
+        changeScreen(event, "game_mode_selection.fxml");}
 
     public void backToMainMenu(ActionEvent event){changeScreen(event, "main_menu.fxml");}
 
