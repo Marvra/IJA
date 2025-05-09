@@ -1,3 +1,9 @@
+/**
+ * @author Martin Vrablec
+ * 
+ *  controller for main menu
+ *  handles most of the events in the main and difficulty selection menu
+ */
 package com.example.proj;
 
 import com.sun.tools.javac.Main;
@@ -21,8 +27,8 @@ public class MainMenuController {
 
     private static boolean startWithTimer = false;
     /**
-     * Used to change the screen when a button is clicked (event).
-     * It loads the fxml file and sets the scene to the stage and shows it.
+     * change the screen when a button is clicked (event)
+     * Ioad fxml file and sets scene to the stage and shows it
      *
      * @param fxmlName name of the fxml file to load
      * @param event event that triggered the method
@@ -48,8 +54,8 @@ public class MainMenuController {
         }
     }
     /**
-     * Used to choose the difficulty of the game when the button is clicked.
-     * It changes the screen using changeScreen method and creates a new game with the chosen difficulty.
+     * choose difficulty of the game when button is clicked
+     * changes the screen using changeScreen method and creates a new game with chosen difficulty
      *
      * @param event event that triggered the method
      * @param difficulty difficulty level of the game
@@ -68,7 +74,7 @@ public class MainMenuController {
             GameGenerator generator = new GameGenerator(dimensions, dimensions, difficulty);
             Game game = null;
 
-            if (difficulty == GeneralDifficulty.easy) { // no time for proper fix
+            if (difficulty == GeneralDifficulty.easy) {
                 while (true) {
                     try {
                         game = generator.generate();
@@ -96,33 +102,33 @@ public class MainMenuController {
             stage.show();
 
         } catch (IOException e) {
-            System.out.println("Error loading board.fxml: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 
     /**
-     * Method used to choose easy difficulty when the button is clicked.
+     * choose easy difficulty and create new game
      *
      * @param event event that triggered the method
      */
     public void easyDifficulty(ActionEvent event){chooseDifficulty(event, GeneralDifficulty.easy, 6);}
 
     /**
-     * Method used to choose medium difficulty when the button is clicked.
+     * Choose medium ddifficulty and create new game
      *
      * @param event event that triggered the method
      */
     public void mediumDifficulty(ActionEvent event){chooseDifficulty(event, GeneralDifficulty.medium, 8);}
 
     /**
-     * Method used to choose hard difficulty when the button is clicked.
+     *  Choose hard difficulty and create new game
      *
      * @param event event that triggered the method
      */
     public void hardDifficulty(ActionEvent event){chooseDifficulty(event, GeneralDifficulty.hard, 12);}
 
     /**
-     * Method to start a Classic Mode Game
+     * start a classic mode game
      *
      * @param event event that triggered the method
      */
@@ -131,7 +137,7 @@ public class MainMenuController {
         changeScreen(event, "game_mode_selection.fxml");}
 
     /**
-     * Method to start a Timeout Mode Game
+     * start a timed mode game
      *
      * @param event event that triggered the method
      */
@@ -142,7 +148,7 @@ public class MainMenuController {
     public void backToMainMenu(ActionEvent event){changeScreen(event, "main_menu.fxml");}
 
     /**
-     * Method used to choose custom difficulty when the button is clicked.
+     * load a game from log file
      *
      * @param event event that triggered the method
      */

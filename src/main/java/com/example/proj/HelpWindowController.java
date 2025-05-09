@@ -1,3 +1,9 @@
+/**
+ * @author Martin Vrablec
+ * 
+ *  controller used for help window holds the original game state and updates the help board with the current game state
+ * 
+ */
 package com.example.proj;
 
 import javafx.fxml.FXML;
@@ -30,6 +36,7 @@ public class HelpWindowController {
 
     /**
      * Initializes help board with the original game state.
+     * creates whole grid with tiles
      *
      * @param game  current game instance.
      * @param original  original game instance.
@@ -98,6 +105,7 @@ public class HelpWindowController {
 
     /**
      * Creates a tile for the help board.
+     * copies original node image 
      *
      * @param row   row index of the tile.
      * @param col   column index of the tile.
@@ -135,11 +143,11 @@ public class HelpWindowController {
     }
 
     /**
-     * Calculates the number of rotations needed to match the original game state.
+     * Calculate number of rotations needed to match the original game state.
      *
      * @param current current sides of the game node.
      * @param target target sides of original game node.
-     * @return int of rotations needed to match original game state.
+     * @return number of rotations needed to match original game state.
      */
     public static int rotationsToMatchOriginal(List<Side> current, List<Side> target) {
         List<Side> targetCopy = new ArrayList<>(target);

@@ -1,3 +1,10 @@
+/**
+ * @author: Martin Vrablec
+ * 
+ * controller for the log menu and log mode of board
+ * allows to load the game from the log file
+ * and create the logged game and its traversions
+ */
 package com.example.proj;
 
 import javafx.event.ActionEvent;
@@ -37,8 +44,8 @@ public class LogController {
     private List<String> log;
 
     /**
-     * Initialize controller and gets list of log files.
-     * from the resources/log.
+     * initialize controller and gets list of log files
+     * from the resources/log
      */
     public void initialize() {
         logFiles.getItems().clear();
@@ -54,7 +61,7 @@ public class LogController {
     }
 
     /**
-     * Method to go back to the main menu.
+     * methid to go back to the main menu
      *
      * @param event event that triggered the method
      */
@@ -64,8 +71,8 @@ public class LogController {
     }
 
     /**
-     * Starts the selected game from the log file.
-     * loads the game from the log file and creates a new board.
+     * start the selected game from the log file
+     * loads the game from the log file and creates a new board
      *
      * @param event event that triggered the method
      */
@@ -99,8 +106,8 @@ public class LogController {
 
 
     /**
-     * Handles the log file selection and creates a game from the log file.
-     * calls the stringToGameNode method to create the game nodes.
+     * Handle log file selection and creates a game from the log file
+     * calls the stringToGameNode method to create the game nodes
      *
      * @return Game object created from the log file
      */
@@ -166,13 +173,13 @@ public class LogController {
 
 
     /**
-     * Converts a string of game node to aPosition object and creates corresponding node in game.
-     * Uses regex to parse string for needed information about gameNode in log.
-     * string format is  example : "{L[2@3][SOUTH,NORTH]}".
+     * convers string of game node to aPosition object and creates corresponding node in game
+     * Uses regex to parse string for needed information about gameNode in log
+     * string format is  example : "{L[2@3][SOUTH,NORTH]}"
      *
-     * @param line String representation of the game node.
-     * @param game Game object where the node will be created.
-     * @return Position object representing the coordinates of the node.
+     * @param line string representation of the game node
+     * @param game Game object where the node will be created
+     * @return position object representing the coordinates of the node
      */
     static public Position stringToGameNode(String line, Game game, boolean uglyStop) {
         // {L[2@3][SOUTH,NORTH]}
@@ -227,11 +234,11 @@ public class LogController {
     }
 
     /**
-     * Gets the board dimensions from the log line.
+     * Get  board dimensions from the log line
      * Format of board dimensions : "BOARD DIMENSIONS : [rows@cols]"
      *
      * @param logLine the log line containing the board dimensions
-     * @return an array with the board dimensions [rows, cols]
+     * @return array with the board dimensions [rows, cols]
      */
     public static int[] getBoardDimensionsFromLog(String logLine) {
         // board dimensions
@@ -243,13 +250,12 @@ public class LogController {
             int cols = Integer.parseInt(matcher.group(2));
             return new int[]{rows, cols};
         } else {
-            throw new IllegalArgumentException("Invalid log format for board dimensions: " + logLine);
+            throw new IllegalArgumentException(logLine);
         }
     }
 
 
 
-    // DO SIDE
     static public Side stringToSide(String sideStr) {
         switch (sideStr.trim()) {
             case "NORTH": return Side.NORTH;
@@ -257,7 +263,7 @@ public class LogController {
             case "EAST": return Side.EAST;
             case "WEST": return Side.WEST;
             default:
-                throw new IllegalArgumentException("Invalid side: " + sideStr);
+                throw new IllegalArgumentException(sideStr);
         }
     }
 }

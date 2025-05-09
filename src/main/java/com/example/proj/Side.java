@@ -1,5 +1,12 @@
+/**
+ * @author Martin Vrablec
+ * @author Jakub Ramaseuski
+ */
 package com.example.proj;
 
+/**
+ * Enum representing sides of game node
+ */
 public enum Side {
     EAST,
     SOUTH,
@@ -7,9 +14,9 @@ public enum Side {
     NORTH;
 
     /**
-     * Converts this enum to a string.
+     * Converts this enum to a string
      *
-     * @return A string representing this enum.
+     * @return A string representing this enum
      */
     @Override
     public String toString() {
@@ -28,9 +35,9 @@ public enum Side {
     }
 
     /**
-     * Returns the opposite direction of the current side.
+     * Returns the opposite direction of the current side
      *
-     * @return The opposite Side of the current Side.
+     * @return The opposite Side of the current Side
      */
     public Side opposite() {
         switch (this) {

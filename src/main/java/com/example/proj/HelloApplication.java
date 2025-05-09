@@ -1,3 +1,8 @@
+/**
+ * @author Martin Vrablec
+ * 
+ *  javafx premade class which is used to start the application
+ */
 package com.example.proj;
 
 import javafx.application.Application;
@@ -7,6 +12,10 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 
+
+/**
+ * basic JavaFX start application
+ */
 public class HelloApplication extends Application {
     @Override
     public void start(Stage stage) throws IOException {

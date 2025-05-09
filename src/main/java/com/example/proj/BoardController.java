@@ -1,4 +1,11 @@
-
+/**
+ * @author Martin Vrablec
+ * 
+ *  Main controller for the game board
+ *  handles board creation, saves additional information for log, timer mode, help window
+ * 
+ * 
+ */
 package com.example.proj;
 
 import ija.ija2024.tool.common.Observable;
@@ -30,6 +37,11 @@ import java.util.*;
 
 import com.example.proj.game.Game;
 
+
+/**
+ * Controller for the game board
+ *  handles board creation, saves additional information for the log, timer mode and  help window
+ */
 public class BoardController implements Observer {
 
     private int imageWidth = 50;
@@ -80,11 +92,11 @@ public class BoardController implements Observer {
     // --- GAME CREATION ---
 
     /**
-     * Creates the game board based on the given game.
-     * It initializes the board tiles and sets up the grid.
-     * It also randomizes the board rotation and sets up the timer if needed.
+     * creates the game board based on the given game
+     * initialize the board titles and sets up the grid
+     * rndomizes the board rotation and sets up the timer if needed
      *
-     * @param game The game object containing the board.
+     * @param game game object containing the board
      */
     public void createBoard(Game game) {
 
@@ -152,10 +164,10 @@ public class BoardController implements Observer {
     }
 
     /**
-     * Randomizes the rotation of the game board.
-     * It iterates through each node and randomly rotates it 0 to 3 times.
+     * randomize rotation of the game board.=
+     * iterates through each node and applies a random number of rotations
      *
-     * @param game The game object containing the board.
+     * @param game game object containing the board
      */
     private void randomizeBoardRotation(Game game) {
         Random rand = new Random();
@@ -182,9 +194,9 @@ public class BoardController implements Observer {
 
 
     /**
-     * Checks if all bulbs are lit in the game.
+     * check if all bulbs are lit in the game
      *
-     * @return true if all bulbs are lit, false otherwise.
+     * @return true if all bulbs are lit, false otherwise
      */
     private boolean allBulbsAreLit() {
         for (int row = 0; row < createdGame.rows(); row++) {
@@ -202,7 +214,7 @@ public class BoardController implements Observer {
     }
 
     /**
-     * Ends the game and shows a message.
+     * called when the game is over disables the grid board and shows winning message
      */
     private void endGame() {
         gridBoard.setDisable(true);
@@ -211,7 +223,7 @@ public class BoardController implements Observer {
 
 
     /**
-     * Goes back to the main menu when the button is clicked.
+     * go back to the main menu when the button is clicked.
      *
      * @param event The event that triggered the method.
      */
@@ -230,11 +242,10 @@ public class BoardController implements Observer {
     }
 
     /**
-     * Updates the game board based on the observable pattern.
-     * It checks if the observable is an instance of GameNode and updates the corresponding ImageView.
-     * It also updates the help window if it is open.
+     * Updates the game node when the observable changes
+     * Checks if the node is lit and updates the UI accordingaly
      *
-     * @param o The observable object that triggered the update.
+     * @param o observable object that has been changed.
      */
     @Override
     public void update(Observable o) {
@@ -264,11 +275,12 @@ public class BoardController implements Observer {
 
     // --- HELP WINDOW HELPER ---
 
+
     /**
-     * Initializes the board with the given game.
-     * It sets up the grid and creates the board based on the game.
+     * open the help window when the help button is clicked
+     * load the help window FXML and initializes the help board
      *
-     * @param event The game object containing the board.
+     * @param event event that triggered the method
      */
     @FXML
     public void onHelpClicked(ActionEvent event) {
@@ -292,11 +304,11 @@ public class BoardController implements Observer {
     }
 
     /**
-     * Creates a copy of the original game by value.
-     * It creates a new game with the same dimensions and copies the nodes.
+     * Create a copy of the game by value
      *
-     * @param original The original game to be copied.
-     * @return A new game that is a copy of the original.
+     * 
+     * @param original the game that needs to be copied
+     * @return new game object with copied nodes
      */
     public Game copyByValue(Game original) {
         Game copy = Game.create(original.rows(), original.cols());
@@ -319,10 +331,10 @@ public class BoardController implements Observer {
 
     // --- TIME MODE HELPER ---
     /**
-     * Sets the timed mode for the game.
+     * Set timed mode for the game
      *
-     * @param enabled Whether the timed mode is enabled or not.
-     * @param seconds The number of seconds for the timer.
+     * @param enabled Wtimed mode is enabled or not
+     * @param seconds number of seconds for the timer
      */
     public void setTimedMode(boolean enabled, int seconds) {
         this.timedMode = enabled;
@@ -330,10 +342,10 @@ public class BoardController implements Observer {
     }
 
     /**
-     * Starts the timer with the given number of seconds.
-     * It updates the timer label every second and stops when time is up.
+     * start the timer with the given number of seconds
+     * update the timer label every second and stops when time is up
      *
-     * @param seconds The number of seconds to start the timer with.
+     * @param seconds number of seconds to start the timer with
      */
     public void startTimer(int seconds) {
         timeRemaining = seconds;
@@ -359,10 +371,10 @@ public class BoardController implements Observer {
 
     // --- CORRECT IMAGE SELECTION ---
     /**
-     * Selects the correct image for the given GameNode based on its type and sides.
+     * select correct image for the given GameNode based on its type and sides.
      *
-     * @param node The GameNode to select the image for.
-     * @return The selected Image.
+     * @param node GameNode to select the image for
+     * @return selected Image
      */
     private Image selectCorrectImageTitle(GameNode node) {
         HashSet<Side> sides = node.sides;
@@ -394,11 +406,11 @@ public class BoardController implements Observer {
     }
 
     /**
-     * Counts the number of rotations needed to match the sides of the given GameNode.
+     * Count number of rotations needed to match the sides of the given GameNode
      *
-     * @param current The current sides of the GameNode.
-     * @param target The target sides to match.
-     * @return The number of rotations needed.
+     * @param current current sides of the GameNode
+     * @param target target sides to match
+     * @return number of rotations needed
      */
     static public int countRotationsToMatch(List<Side> current, List<Side> target) {
         int count = 0;
@@ -412,11 +424,11 @@ public class BoardController implements Observer {
     }
 
     /**
-     * Counts the number of rotations needed to match the sides of the given GameNode.
+     * Count number of rotations needed to match the sides of the given GameNode
      *
-     * @param numberOfSides The number of sides of the GameNode.
-     * @param node The GameNode to check.
-     * @return The number of rotations needed.
+     * @param numberOfSides number of sides of the GameNod
+     * @param node GameNode to check
+     * @return number of rotations needed
      */
     private int numberOfRotations(int numberOfSides, GameNode node) {
         List<Side> sidesPic;
@@ -441,10 +453,22 @@ public class BoardController implements Observer {
         return countRotationsToMatch(origSides, sidesPic);
     }
 
+    /**
+     * check if two lists of sides are the same
+     *
+     * @param a first list of sides
+     * @param b second list of sides
+     * @return true if the lists are the same
+     */
     static public boolean sameSides(List<Side> a, List<Side> b) {
         return new HashSet<>(a).equals(new HashSet<>(b));
     }
 
+    /**
+     * Rrtatea given list of sides to the right
+     *
+     * @param sides list of sides to rotate
+     */
     static public void rotateRight(List<Side> sides) {
         for (int i = 0; i < sides.size(); i++) {
             sides.set(i, switch (sides.get(i)) {
@@ -457,10 +481,10 @@ public class BoardController implements Observer {
     }
 
     /**
-     * Prints the clicked tile  to log and updates the game node.
+     * Prints the clicked tile to log and updates the game node
      *
-     * @param tile The ImageView representing the clicked tile.
-     * @param node The GameNode associated with the clicked tile.
+     * @param tile imageView representing the clicked tile
+     * @param node gGameNode associeted with clicked tile
      */
     private void printClickedTile(ImageView tile, GameNode node) {
 
@@ -487,9 +511,9 @@ public class BoardController implements Observer {
     }
 
     /**
-     * Saves the current game to a log file.
-     * creates  new file with the name based of the current time and difficulty level.
-     * log is saved in the lib.
+     * Saves the current game to a log file
+     * creates  new file with the name based of the current time and difficulty level
+     * log is saved in the lib
      */
     private void saveToLogFile() {
         String timestamp = String.valueOf(System.currentTimeMillis());
@@ -521,11 +545,11 @@ public class BoardController implements Observer {
     }
 
     /**
-     * Used to set the log mode.
-     * set the log data and disables the grid board.
-     * enables the next, prev, play buttons.
+     * Used to set the log mode
+     * set the log data and disables the grid board
+     * enables the next, prev, play buttons
      *
-     * @param log list of strings representing the log
+     * @param log list of strings representing the lo
      */
     public void logMode(List<String> log) {
         this.logData = log;
@@ -545,9 +569,8 @@ public class BoardController implements Observer {
     }
 
     /**
-     * Used to go to next move in log (next line in current log).
-     * Updates game with the next line from log.
-     *
+     * Used to go to next move in log (next line in current log)
+     * Updates game with the next line from log
      * @param event event that triggered method
      */
     public void nextMove(ActionEvent event) {
@@ -567,8 +590,8 @@ public class BoardController implements Observer {
     }
 
     /**
-     * Used to go back to previous move in log (previous line in current log).
-     * updates game with the previous line from log.
+     * Used to go back to previous move in log (previous line in current log)
+     * updates game with the previous line from log
      *
      * @param event event that triggered method
      */
@@ -589,8 +612,8 @@ public class BoardController implements Observer {
     }
 
     /**
-     * Updates the game with the given line from the log.
-     * ceates a new Position object and updates the game node.
+     * Updates the game with the given line from the log
+     * ceates a new Position object and updates the game node
      * Used in log mode in prev and next move
      *
      * @param line line from log file
@@ -601,7 +624,7 @@ public class BoardController implements Observer {
     }
 
     /**
-     * Used to play the log when the button is clicked.
+     * Used to play the log when the button is clicked
      * sets log buttons back to being disabled
      *
      * @param event event that triggered method
