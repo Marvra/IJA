@@ -42,7 +42,7 @@ public class LogController {
      */
     public void initialize() {
         logFiles.getItems().clear();
-        Path dirPath = Paths.get("src/main/resources/log");
+        Path dirPath = Paths.get("lib/resources/log");
         try (Stream<Path> paths = Files.list(dirPath)) {
             paths.filter(path -> path.toString().endsWith(".txt"))
                     .map(Path::getFileName)
@@ -113,7 +113,7 @@ public class LogController {
             return null;
         }
 
-        Path filePath = Paths.get("src/main/resources/log", selectedFile);
+        Path filePath = Paths.get("lib/resources/log", selectedFile);
 
         if (!Files.exists(filePath)) {
             return null;

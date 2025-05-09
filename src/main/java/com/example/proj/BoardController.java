@@ -504,7 +504,7 @@ public class BoardController implements Observer {
 
         String logname = "game_log_"+ difficlty + "_" + timestamp + ".txt";
         try {
-            File logFile = new File("src/main/resources/log", logname );
+            File logFile = new File("lib/resources/log/", logname );
             FileWriter fileWriter = new FileWriter(logFile, false);
             BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
 

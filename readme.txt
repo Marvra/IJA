@@ -4,11 +4,21 @@ Authors:
  - Martin Vrablec (xvrabl06@stud.fit.vut.cz)
 
 ## Building 
-In the project root directory, executing
+Assuming you have /usr/lib/jvm/openjfx/, you can simply `make` and `make run` in the root directory, otherwise try
+```bash
+mvn install:install-file -Dfile=lib/ijatool.jar -DgroupId=cz.vutbr.fit -DartifactId=ijatool -Dversion=1.0 -Dpackaging=jar
+mvn clean package
+```
+and subsequently
+```
+java --module-path /path/to/javafx/lib  --add-modules javafx.controls,javafx.fxml -jar target/Connect-it-1.0.jar
+```
+or running
 ```bash
 mvn clean javafx:run
 ```
-will lead to launching the application directly (without jar compilation). Program takes no arguments
+will lead to launching the application directly (without jar compilation). 
+Program takes no arguments.
 
 ## Theory of map generation
 As it may be obvious, this submission does not hold any maps within its repository. All maps are generated with a variety of steps that will be mentioned
