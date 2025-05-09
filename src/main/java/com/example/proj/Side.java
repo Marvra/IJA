@@ -6,6 +6,11 @@ public enum Side {
     WEST,
     NORTH;
 
+    /**
+     * Converts this enum to a string.
+     *
+     * @return A string representing this enum.
+     */
     @Override
     public String toString() {
         switch (this) {
@@ -22,6 +27,11 @@ public enum Side {
         }
     }
 
+    /**
+     * Returns the opposite direction of the current side.
+     *
+     * @return The opposite Side of the current Side.
+     */
     public Side opposite() {
         switch (this) {
             case NORTH:

@@ -28,8 +28,14 @@ public class HelpWindowController {
     private Game currentGame;
     private Game originalGame;
 
-
-
+    /**
+     * Initializes the help board with the original game state.
+     *
+     * @param game          The current game instance.
+     * @param original      The original game instance.
+     * @param originalGrid  The grid pane of the original game.
+     * @param originalBoardTitles The image views of the original board titles.
+     */
     public void initHelpBoard(Game game, Game original, GridPane originalGrid, ImageView[][] originalBoardTitles) {
         currentGame = game;
         originalGame = original;
@@ -38,26 +44,34 @@ public class HelpWindowController {
         gridHelpBoard.getChildren().clear();
 
         for (Node node : originalGrid.getChildren()) {
-            if (node instanceof ImageView originalImageView) {
-                Integer row = GridPane.getRowIndex(originalImageView);
-                Integer col = GridPane.getColumnIndex(originalImageView);
-                row = (row == null) ? 0 : row;
-                col = (col == null) ? 0 : col;
+            if (node instanceof StackPane tilePane) {
+                // Extract the ImageView from the StackPane
+                for (Node child : tilePane.getChildren()) {
+                    if (child instanceof ImageView originalImageView) {
+                        Integer row = GridPane.getRowIndex(tilePane);
+                        Integer col = GridPane.getColumnIndex(tilePane);
+                        row = (row == null) ? 0 : row;
+                        col = (col == null) ? 0 : col;
 
-                Position pos = new Position(row + 1, col + 1);
-                GameNode currentNode = currentGame.node(pos);
-                GameNode originalNode = originalGame.node(pos);
+                        Position pos = new Position(row + 1, col + 1);
+                        GameNode currentNode = currentGame.node(pos);
+                        GameNode originalNode = originalGame.node(pos);
 
-                StackPane tile = createTile(row, col, currentNode, originalNode);
-                gridHelpBoard.add(tile, col, row);
+                        StackPane tile = createTile(row, col, currentNode, originalNode);
+                        gridHelpBoard.add(tile, col, row);
+                        break; // Found ImageView, no need to check more children
+                    }
+                }
             }
         }
-
     }
 
 
-
-
+    /**
+     * Updates the help board with the current game state.
+     *
+     * @param node The current game node to be updated.
+     */
     public void updateGame(GameNode node) {
         if (node == null || gridHelpBoard == null) {
             System.out.println("OUTTTTT");
@@ -82,7 +96,15 @@ public class HelpWindowController {
         gridHelpBoard.add(tile, col, row);
     }
 
-
+    /**
+     * Creates a tile for the help board.
+     *
+     * @param row          The row index of the tile.
+     * @param col          The column index of the tile.
+     * @param currentNode  The current game node.
+     * @param originalNode The original game node.
+     * @return A StackPane containing the tile and its label.
+     */
     private StackPane createTile(int row, int col, GameNode currentNode, GameNode originalNode) {
         ImageView originalImageView = boardTitles[row][col];
         ImageView cloned = new ImageView(originalImageView.getImage());
@@ -112,6 +134,13 @@ public class HelpWindowController {
         return stack;
     }
 
+    /**
+     * Calculates the number of rotations needed to match the original game state.
+     *
+     * @param current The current sides of the game node.
+     * @param target  The target sides of the original game node.
+     * @return The number of rotations needed to match the original game state.
+     */
     public static int rotationsToMatchOriginal(List<Side> current, List<Side> target) {
         List<Side> targetCopy = new ArrayList<>(target);
         targetCopy.sort(Comparator.naturalOrder());

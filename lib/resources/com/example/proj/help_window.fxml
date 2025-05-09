@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox
+        xmlns="http://javafx.com/javafx/23.0.1"
+        xmlns:fx="http://javafx.com/fxml/1"
+        fx:controller="com.example.proj.HelpWindowController"
+        alignment="CENTER">
+   <children>
+      <GridPane fx:id="gridHelpBoard" alignment="CENTER">
+         <columnConstraints>
+            <ColumnConstraints halignment="CENTER"/>
+         </columnConstraints>
+         <rowConstraints>
+            <RowConstraints valignment="CENTER"/>
+         </rowConstraints>
+      </GridPane>
+   </children>
+</VBox>

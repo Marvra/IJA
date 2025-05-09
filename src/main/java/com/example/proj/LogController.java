@@ -2,6 +2,10 @@ package com.example.proj;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 
@@ -19,6 +23,7 @@ import java.util.stream.Stream;
 
 import com.example.proj.game.Game;
 import com.example.proj.Position;
+import javafx.stage.Stage;
 
 public class LogController {
     @FXML
@@ -31,6 +36,10 @@ public class LogController {
     private String logFileName;
     private List<String> log;
 
+    /**
+     * Initialize controller and gets list of log files.
+     * from the resources/log.
+     */
     public void initialize() {
         logFiles.getItems().clear();
         Path dirPath = Paths.get("src/main/resources/log");
@@ -45,44 +54,68 @@ public class LogController {
     }
 
     /**
-     * Used to go back to the main menu when the back button is clicked.
-     * 
+     * Method to go back to the main menu.
+     *
      * @param event event that triggered the method
      */
     @FXML
     public void backToMenu(ActionEvent event) {
-        MainMenuController.changeScreen(event, "game_mode_selection.fxml");
+        MainMenuController.changeScreen(event, "main_menu.fxml");
     }
 
     /**
-     * 
-     * 
+     * Starts the selected game from the log file.
+     * loads the game from the log file and creates a new board.
+     *
      * @param event event that triggered the method
      */
     public void startSelectedGame(ActionEvent event) {
-        Game game = handleLogSelected();
-
-        if(logFiles.getSelectionModel().getSelectedItem() == null) {
-            System.out.println("No file selected.");
+        if (logFiles.getSelectionModel().getSelectedItem() == null) {
             return;
         }
-        BoardController boardController = MainMenuController.changeScreen(event, "board.fxml").getController();
-        boardController.logMode(log);
-        boardController.createBoard(game);
+
+        Game game = handleLogSelected();
+
+        try {
+            FXMLLoader loader = new FXMLLoader(MainMenuController.class.getResource("board.fxml"));
+            Parent root = loader.load();
+
+            Stage stage = (Stage)((Node)event.getSource()).getScene().getWindow();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+
+            BoardController boardController = loader.getController();
+            boardController.logMode(log);
+            boardController.createBoard(game);
+
+            stage.sizeToScene();
+            stage.show();
+
+        } catch (IOException e) {
+            System.out.println("Error loading board.fxml: " + e.getMessage());
+            e.printStackTrace();
+        }
     }
+
+
+    /**
+     * Handles the log file selection and creates a game from the log file.
+     * calls the stringToGameNode method to create the game nodes.
+     *
+     * @return Game object created from the log file
+     */
 
     @FXML
     private Game handleLogSelected() {
         String selectedFile = logFiles.getSelectionModel().getSelectedItem();
+
         if (selectedFile == null) {
-            System.out.println("No file selected.");
             return null;
         }
 
         Path filePath = Paths.get("src/main/resources/log", selectedFile);
 
         if (!Files.exists(filePath)) {
-            System.out.println("File not found: " + filePath.toAbsolutePath());
             return null;
         }
 
@@ -95,7 +128,7 @@ public class LogController {
         }
 
         if (allLines.isEmpty()) {
-            throw new RuntimeException("Log file is empty.");
+            return null;
         }
 
         int[] dimensions = getBoardDimensionsFromLog(allLines.get(0).trim());
@@ -127,18 +160,17 @@ public class LogController {
             }
         }
 
-        System.out.println("Game successfully created. Log size: " + log.size());
         return logGame;
     }
 
 
 
     /**
-     * Converts a string of a game node to a Position object and creates the corresponding node in the game.
-     * Uses regex to parse the string for needed information about give string of node.
-     * string format is "{L[2@3][SOUTH,NORTH]}".
+     * Converts a string of game node to aPosition object and creates corresponding node in game.
+     * Uses regex to parse string for needed information about gameNode in log.
+     * string format is  example : "{L[2@3][SOUTH,NORTH]}".
      *
-     * @param line string representation of the game node.
+     * @param line String representation of the game node.
      * @param game Game object where the node will be created.
      * @return Position object representing the coordinates of the node.
      */
@@ -195,8 +227,8 @@ public class LogController {
     }
 
     /**
-     * This method extracts the board dimensions from a log line.
-     * It assumes the log line has the format: "BOARD DIMENSIONS : [rows@cols]"
+     * Gets the board dimensions from the log line.
+     * Format of board dimensions : "BOARD DIMENSIONS : [rows@cols]"
      *
      * @param logLine the log line containing the board dimensions
      * @return an array with the board dimensions [rows, cols]

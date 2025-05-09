@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Text?>
+
+<AnchorPane prefHeight="401.0" prefWidth="600.0" stylesheets="@styles/main_menu_style.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.proj.MainMenuController">
+
+   <children>
+      <VBox alignment="CENTER" spacing="20" AnchorPane.bottomAnchor="100.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="100.0">
+         <children>
+            <Text styleClass="title-text" text="Choose Difficulty" />
+            <Button fx:id="difficultyBtn" onAction="#easyDifficulty" styleClass="button-base, button-easy" text="Easy" />
+            <Button fx:id="difficultyBtn2" onAction="#mediumDifficulty" styleClass="button-base, button-medium" text="Medium" />
+            <Button fx:id="difficultyBtn1" onAction="#hardDifficulty" styleClass="button-base, button-hard" text="Hard" />
+         </children>
+      </VBox>
+      <Button fx:id="backToMode" layoutX="14.0" layoutY="14.0" onAction="#backToMainMenu" styleClass="button-main-menu" text="⟵ to Mode Seleciton " />
+   </children>
+</AnchorPane>

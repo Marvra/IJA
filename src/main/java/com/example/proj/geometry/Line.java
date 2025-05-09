@@ -68,6 +68,17 @@ public class Line {
 		}
 	}
 
+	/**
+	 * Calculates the distance between two lines. If the lines are parallel, this
+	 * function returns the distance between one of the lines and the start point of
+	 * the other line. If the lines are not parallel, this function returns 0.
+	 * 
+	 * @param line1
+	 *            The first line.
+	 * @param line2
+	 *            The second line.
+	 * @return The distance between the two lines.
+	 */
 	public static double distance(Line line1, Line line2) {
 		try {
 			if (line1.vector.clone().normalize().equals(line2.vector.clone().normalize())) {
@@ -81,10 +92,32 @@ public class Line {
 		}
 	}
 
+	/**
+	 * Checks if a point is on a line. The point is considered to be on the line
+	 * if the distance between the point and the line is less than or equal to 0.001.
+	 * 
+	 * @param line
+	 *            The line to check.
+	 * @param point
+	 *            The point to check.
+	 * @return True if the point is on the line, false otherwise.
+	 */
 	public static boolean isOn(Line line, Point point) {
 		return distance(line, point) <= 0.001;
 	}
 
+	/**
+	 * Calculates the intersection point between two lines. If the lines are
+	 * parallel, this method returns null. The intersection point is calculated by
+	 * solving the equation system that describes the two lines. If the lines are
+	 * coincident, the method returns the start point of one of the lines.
+	 * 
+	 * @param first
+	 *            The first line.
+	 * @param second
+	 *            The second line.
+	 * @return The intersection point of the two lines.
+	 */
 	public static Point intersection(Line first, Line second) {
 		if (distance(first, second) >= (Math.ulp(1.0) * 1024))
 			return null;

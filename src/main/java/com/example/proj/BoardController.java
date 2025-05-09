@@ -16,6 +16,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import ija.ija2024.tool.common.Observable.Observer;
+import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
 import java.io.BufferedWriter;
@@ -64,16 +65,21 @@ public class BoardController implements Observer {
     private Game copyGame;
     // HELP
 
-    // LOG
+    //LOG
     private List<String> logData;
     private int logLine = 0;
     private StringBuilder logOutput;
-    // LOG
+    //LOG
 
     private Game createdGame;
 
     private ImageView[][] boardTitles;
 
+    /**
+     * Goes back to the main menu when the button is clicked.
+     *
+     * @param event The event that triggered the method.
+     */
     public void backToMenu(ActionEvent event) {
 
         if (timer != null) {
@@ -85,9 +91,15 @@ public class BoardController implements Observer {
             helpWindowStage.close();
             helpWindowStage = null;
         }
-        MainMenuController.changeScreen(event, "game_mode_selection.fxml");
+        MainMenuController.changeScreenTimer(event, "game_mode_selection.fxml");
     }
 
+    /**
+     * Initializes the board with the given game.
+     * It sets up the grid and creates the board based on the game.
+     *
+     * @param event The game object containing the board.
+     */
     @FXML
     public void onHelpClicked(ActionEvent event) {
         try {
@@ -101,6 +113,7 @@ public class BoardController implements Observer {
             helpWindowStage = new Stage();
             helpWindowStage.setTitle("Help");
             helpWindowStage.setScene(new Scene(root));
+            helpWindowStage.sizeToScene();
             helpWindowStage.show();
 
         } catch (IOException e) {
@@ -108,6 +121,13 @@ public class BoardController implements Observer {
         }
     }
 
+    /**
+     * Updates the game board based on the observable pattern.
+     * It checks if the observable is an instance of GameNode and updates the corresponding ImageView.
+     * It also updates the help window if it is open.
+     *
+     * @param o The observable object that triggered the update.
+     */
     @Override
     public void update(Observable o) {
         if (!(o instanceof GameNode))
@@ -125,19 +145,20 @@ public class BoardController implements Observer {
             view.setEffect(null);
         }
 
-        if (helpWindowController != null) {
+        if(helpWindowController != null) {
 
             helpWindowController.updateGame(node);
-
-        } else {
-            System.out.println("SEM NULL");
-
         }
-
-        System.out.println("WAS UPDATED");
 
     }
 
+    /**
+     * Creates the game board based on the given game.
+     * It initializes the board titles and sets up the grid.
+     * It also randomizes the board rotation and sets up the timer if needed.
+     *
+     * @param game The game object containing the board.
+     */
     public void createBoard(Game game) {
 
         if (game == null)
@@ -173,9 +194,16 @@ public class BoardController implements Observer {
                 boardTitles[row][col] = title;
                 gridBoard.add(title, col, row);
 
+                StackPane tileContainer = new StackPane(title); // Wrap in a container
+                tileContainer.getStyleClass().add("board-tile"); // Apply border/padding class
+
+                gridBoard.add(tileContainer, col, row); // Add the container instead of the raw ImageView
+
+
                 if (node.isEmpty())
                     continue; // SKIP EMPTY
                 node.addObserver(this);
+
 
                 title.setPickOnBounds(true);
                 title.setOnMouseClicked(mouseClickedEvent -> printClickedTitle(title, node));
@@ -187,18 +215,22 @@ public class BoardController implements Observer {
         logOutput.append("END BOARD CREATION").append("\n");
         this.createdGame = game;
         createdGame.init();
-        update(createdGame.node(new Position(createdGame.powerRow, createdGame.powerCol)));
-        createdGame.update(createdGame.node(new Position(createdGame.powerRow, createdGame.powerCol)));
-        if (game == null) {
-            System.out.println("HOVNO GENEROVANE ");
+        update(createdGame.node( new Position(createdGame.powerRow, createdGame.powerCol)));
+        createdGame.update(createdGame.node( new Position(createdGame.powerRow, createdGame.powerCol)));
+        if(game == null) {
             return;
         }
-
         if (timedMode) {
             startTimer(startTime);
         }
     }
 
+    /**
+     * Randomizes the rotation of the game board.
+     * It iterates through each node and randomly rotates it 0 to 3 times.
+     *
+     * @param game The game object containing the board.
+     */
     private void randomizeBoardRotation(Game game) {
         Random rand = new Random();
 
@@ -211,18 +243,21 @@ public class BoardController implements Observer {
                     continue;
                 }
 
-                int distribution = rand.nextInt(10); // 0 to 9
-                if (distribution < 8) { // 90 % chance of rotation
-                    distribution = rand.nextInt(10);
-                    int rotations = rand.nextInt(4) % (distribution < 3 ? 2 : 4); // 0 to 3
-                    for (int i = 0; i < rotations; i++) {
-                        node.turn();
-                    }
-                }   
+                int rotations = rand.nextInt(4); // 0 to 3
+                for (int i = 0; i < rotations; i++) {
+                    node.turn();
+                }
             }
         }
     }
 
+    /**
+     * Creates a copy of the original game by value.
+     * It creates a new game with the same dimensions and copies the nodes.
+     *
+     * @param original The original game to be copied.
+     * @return A new game that is a copy of the original.
+     */
     public Game copyByValue(Game original) {
         Game copy = Game.create(original.rows(), original.cols());
 
@@ -241,7 +276,13 @@ public class BoardController implements Observer {
         return copy;
     }
 
+
     // NOT IDEAL FIX LATER
+    /**
+     * Checks if all bulbs are lit in the game.
+     *
+     * @return true if all bulbs are lit, false otherwise.
+     */
     private boolean allBulbsAreLit() {
         for (int row = 0; row < createdGame.rows(); row++) {
             for (int col = 0; col < createdGame.cols(); col++) {
@@ -258,12 +299,23 @@ public class BoardController implements Observer {
     }
 
     // TIME
-
+    /**
+     * Sets the timed mode for the game.
+     *
+     * @param enabled Whether the timed mode is enabled or not.
+     * @param seconds The number of seconds for the timer.
+     */
     public void setTimedMode(boolean enabled, int seconds) {
         this.timedMode = enabled;
         this.startTime = seconds;
     }
 
+    /**
+     * Starts the timer with the given number of seconds.
+     * It updates the timer label every second and stops when time is up.
+     *
+     * @param seconds The number of seconds to start the timer with.
+     */
     public void startTimer(int seconds) {
         timeRemaining = seconds;
         timerLabel.setText("Time: " + timeRemaining);
@@ -275,7 +327,8 @@ public class BoardController implements Observer {
             if (timeRemaining <= 0) {
                 timer.stop();
                 gridBoard.setDisable(true);
-                System.out.println("Game Over: Time's up!");
+                timerLabel.setText("Game Over !");
+                timerLabel.setStyle("-fx-text-fill: red; -fx-font-size: 20px;");
             }
         }));
 
@@ -283,18 +336,25 @@ public class BoardController implements Observer {
         timer.play();
     }
     // TIME
-
+    /**
+     * Ends the game and shows a message.
+     */
     private void endGame() {
         gridBoard.setDisable(true);
 
-        javafx.scene.control.Alert alert = new javafx.scene.control.Alert(
-                javafx.scene.control.Alert.AlertType.INFORMATION);
+        javafx.scene.control.Alert alert = new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.INFORMATION);
         alert.setTitle("Game Over");
         alert.setContentText("every bulb is lit");
         alert.showAndWait();
     }
     // NOT IDEAL FIX LATER
 
+    /**
+     * Selects the correct image for the given GameNode based on its type and sides.
+     *
+     * @param node The GameNode to select the image for.
+     * @return The selected Image.
+     */
     private Image selectCorrectImageTitle(GameNode node) {
         HashSet<Side> sides = node.sides;
         Type type = node.type;
@@ -324,7 +384,15 @@ public class BoardController implements Observer {
         return new Image(getClass().getResourceAsStream(base), imageHeight, imageWidth, false, false);
     }
 
+
     // TO GAME PROBABLY
+    /**
+     * Counts the number of rotations needed to match the sides of the given GameNode.
+     *
+     * @param current The current sides of the GameNode.
+     * @param target The target sides to match.
+     * @return The number of rotations needed.
+     */
     static public int countRotationsToMatch(List<Side> current, List<Side> target) {
         int count = 0;
         while (!sameSides(current, target)) {
@@ -333,9 +401,16 @@ public class BoardController implements Observer {
             if (count > 3)
                 break;
         }
-        return count;
+        return  count;
     }
 
+    /**
+     * Counts the number of rotations needed to match the sides of the given GameNode.
+     *
+     * @param numberOfSides The number of sides of the GameNode.
+     * @param node The GameNode to check.
+     * @return The number of rotations needed.
+     */
     private int numberOfRotations(int numberOfSides, GameNode node) {
         List<Side> sidesPic;
 
@@ -376,14 +451,19 @@ public class BoardController implements Observer {
         }
     }
 
+    /**
+     * Prints the clicked title and updates the game node.
+     *
+     * @param title The ImageView representing the clicked title.
+     * @param node The GameNode associated with the clicked title.
+     */
     private void printClickedTitle(ImageView title, GameNode node) {
 
         node.turn();
-        System.out.println(node.toString());
 
         title.setRotate((title.getRotate() + 90) % 360);
 
-        if (helpWindowController != null) {
+        if(helpWindowController != null) {
             helpWindowController.updateGame(node);
         }
 
@@ -401,15 +481,16 @@ public class BoardController implements Observer {
         saveToLogFile();
     }
 
-    // POZOR TU SI TO PREPISUJES TEDA SI PREPISUJES VZDY LOGS
-    // MOZNO NIE TU ZROVNA ALE PROSTE ABY SI SI ULOZIL #. LOG MUSIS KLIKNU 3.KRAT
-    // SAVE
-    // A TIE PREDTYM SA TI PREPISU ABY SA VYTOVRIL DALSI LOG
+    /**
+     * Saves the current game to a log file.
+     * It creates a new file with the name based on the current time and difficulty level.
+     * log is saved in the resources/log folder.
+     */
     private void saveToLogFile() {
         String timestamp = String.valueOf(System.currentTimeMillis());
         String difficlty = "";
 
-        switch (createdGame.cols()) {
+        switch (createdGame.cols()){
             case 6:
                 difficlty = "easy";
                 break;
@@ -421,20 +502,26 @@ public class BoardController implements Observer {
                 break;
         }
 
-        String logname = "game_log_" + difficlty + "_" + timestamp + ".txt";
+        String logname = "game_log_"+ difficlty + "_" + timestamp + ".txt";
         try {
-            File logFile = new File("src/main/resources/log", logname);
+            File logFile = new File("src/main/resources/log", logname );
             FileWriter fileWriter = new FileWriter(logFile, false);
             BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
 
             bufferedWriter.write(String.valueOf(logOutput));
             bufferedWriter.close();
-            System.out.println("SAVED TO FILE");
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
+    /**
+     * Used to set the log mode.
+     * It sets the log data and disables the grid board.
+     * It also enables the next, prev, play buttons.
+     *
+     * @param log list of strings representing the log
+     */
     public void logMode(List<String> log) {
         this.logData = log;
         this.logLine = 0;
@@ -452,6 +539,12 @@ public class BoardController implements Observer {
         playLogBtn.setOpacity(1);
     }
 
+    /**
+     * Used to go to next move in log (next line in current log).
+     * It updates game with the next line from log.
+     *
+     * @param event event that triggered method
+     */
     public void nextMove(ActionEvent event) {
         if (logLine < logData.size()) {
             String lineToUpdate = logData.get(logLine);
@@ -468,6 +561,12 @@ public class BoardController implements Observer {
         }
     }
 
+    /**
+     * Used to go back to previous move in log (previous line in current log).
+     * It updates game with the previous line from log.
+     *
+     * @param event event that triggered method
+     */
     public void prevMove(ActionEvent event) {
         if (logLine > 0) {
             logLine--;
@@ -484,11 +583,24 @@ public class BoardController implements Observer {
         }
     }
 
+    /**
+     * Updates the game with the given line from the log.
+     * It creates a new Position object and updates the game node.
+     * Used in log mode in prev and next move
+     *
+     * @param line line from log file
+     */
     private void updateGame(String line) {
         Position position = LogController.stringToGameNode(line, createdGame, true);
         printClickedTitle(boardTitles[position.getRow() - 1][position.getCol() - 1], createdGame.node(position));
     }
 
+    /**
+     * Used to play the log when the button is clicked.
+     * sets log buttons back to being disabled
+     *
+     * @param event event that triggered method
+     */
     public void playMode(ActionEvent event) {
         nextMoveBtn.setDisable(true);
         prevMoveBtn.setDisable(true);
